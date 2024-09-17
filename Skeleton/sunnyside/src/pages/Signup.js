@@ -1,5 +1,5 @@
 import logo from '../art/sunnysidelogo.PNG';
-import './Signup.css';
+import '../styling/Signup.css';
 
 const SignUp = () => {
   return (
