@@ -30,10 +30,13 @@ function Login() {
 
             <div>
                 <button type="submit">Log In</button>
+
             </div>
+
             <div className="signup-container">
               <span className="signup-subtext">Don't have an account? </span>
-              <a href="/signup" className="sign-up">Sign up</a>
+              <a href="/signup" className="sign-up">Sign up </a>
+              <a href="/landing" className="sign-up">| Landing</a>
             </div>
         </form>
 
