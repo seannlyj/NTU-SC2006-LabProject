@@ -1,78 +1,81 @@
 .Signup {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
 }
 
 /* LOGO (LEFT SIDE) */
 .Logo {
-    flex: 1;
-    text-align: center;
-    background-color: #A3D4F7;
-    height: 100vh;
+  flex: 1;
+  text-align: center;
+  background-color: #a3d4f7;
+  height: 100vh;
 }
 
-.Logo img{
-    width:100%;
-    max-width: 350px;
-}
-  
-.Logo h1, .Logo h2{
-    color: white;
+.Logo img {
+  width: 100%;
+  max-width: 350px;
 }
 
-.Logo h1{
-    margin-top: -15px;
-    font-size:50px;
+.Logo h1,
+.Logo h2 {
+  color: white;
 }
 
-.Logo h2{
-    margin-top: -15px;
-    font-weight: normal;
+.Logo h1 {
+  margin-top: -15px;
+  font-size: 50px;
 }
 
+.Logo h2 {
+  margin-top: -15px;
+  font-weight: normal;
+}
 
 /* SIGNUP FORM PORTION (RIGHT SIDE) */
 
 .SignupForm {
-    flex: 1;
-    padding-left: 150px;
+  flex: 1;
+  padding-left: 150px;
 }
 
-.SignupForm h1{
-    margin-left:-5px;
-    font-size:45px;
-    font-weight: normal;
+.SignupForm h1 {
+  margin-left: -5px;
+  font-size: 45px;
+  font-weight: normal;
 }
 
 .SignupForm label {
-    display: block; /* Ensure the label is displayed as a block element */
-    margin-bottom: 5px; /* Add some space between the label and the input */
+  display: block; /* Ensure the label is displayed as a block element */
+  margin-bottom: 5px; /* Add some space between the label and the input */
 }
 
 .SignupForm input {
-    margin-bottom: 10px; /* Add some space between the label and the input */
-    width: 50%; /* Length of input fields */
-    padding: 8px; /* Height of input fields */
-    box-sizing: border-box; /* Ensure padding doesn't affect the total width */
-    border-radius: 12px; /* Rounded Border value */
-    border: 1px solid #9D9D9D; /* Border width and color */
+  margin-bottom: 10px; /* Add some space between the label and the input */
+  width: 50%; /* Length of input fields */
+  padding: 8px; /* Height of input fields */
+  box-sizing: border-box; /* Ensure padding doesn't affect the total width */
+  border-radius: 12px; /* Rounded Border value */
+  border: 1px solid #9d9d9d; /* Border width and color */
 }
 
-.SignupForm p{
-    font-size: 12px;
-    color: black;  
-    margin-left: 5px;
+.SignupForm p {
+  font-size: 12px;
+  color: black;
+  margin-left: 5px;
 }
-  
+
 /* INPUT FIELDS */
-.name-container, .whole-password-container{
-    display: flex;
-    flex-direction: row;
+.name-container,
+.whole-password-container {
+  display: flex;
+  flex-direction: row;
 }
 
-.lastname-container, .confirm-password-container{
-    margin-left: 43px;
+.lastname-container,
+.confirm-password-container {
+  margin-left: 43px;
 }
 
 /* Specific styles for firstName, lastName, password, and confirmPassword inputs within SignupForm */
@@ -80,40 +83,39 @@
 .SignupForm #lastName,
 .SignupForm #password,
 .SignupForm #confirmPassword {
-    width: 115%; 
+  width: 115%;
 }
 
 /* LINKS */
-.SignupForm a{
-    font-size: 12px;
-    font-weight: bold;
-    text-decoration: none;
-    color: #FDD020;  
+.SignupForm a {
+  font-size: 12px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #fdd020;
 }
 
-.SignupForm .login-container{ 
-    margin-top: 5px;
-    margin-left: 5px;
+.SignupForm .login-container {
+  margin-top: 5px;
+  margin-left: 5px;
 }
 
-.SignupForm .login-subtext{
-    font-size: 12px;
-    color: black;  
-    margin-left: 5px;
+.SignupForm .login-subtext {
+  font-size: 12px;
+  color: black;
+  margin-left: 5px;
 }
-
 
 /* BUTTONS */
 
 .SignupForm button {
-    margin-top: 50px;
-    width: 50%; /* Width of the button */
-    border-radius: 20px; /* Rounded Border value */
-    background-color: #FDD020; /* Button color */
-    color: white; /* Text color */
-    font-weight: bold; /* Bold text */
-    font-size: 15px;  /* Font size */
-    padding: 10px; /* Height of button */
-    border: none; /* No border */
-    cursor: pointer; /* Change cursor to pointer on hover */
-  }
+  margin-top: 50px;
+  width: 50%; /* Width of the button */
+  border-radius: 20px; /* Rounded Border value */
+  background-color: #fdd020; /* Button color */
+  color: white; /* Text color */
+  font-weight: bold; /* Bold text */
+  font-size: 15px; /* Font size */
+  padding: 10px; /* Height of button */
+  border: none; /* No border */
+  cursor: pointer; /* Change cursor to pointer on hover */
+}

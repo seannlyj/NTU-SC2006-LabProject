@@ -1,0 +1,78 @@
+/* The button to toggle the sidebar */
+.toggle-button {
+  font-size: 30px;
+  cursor: pointer;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+}
+/* The sidebar panel itself */
+.SidePanel {
+  height: 100%; /* Full-height */
+  width: 30%;
+  position: fixed; /* Stay in place */
+  top: 0;
+  right: 0; /* Change 'left' to 'right' for right-side panel */
+  background-color: #ffffff; /* Dark background */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  justify-content: center;
+}
+
+/* Close button inside the panel */
+.SidePanel .CloseButton {
+  position: absolute;
+  top: 0;
+  right: 25px; /* Close button on the left side of the panel */
+  font-size: 36px;
+  color: white;
+  cursor: pointer;
+}
+
+.Temperature {
+  font-size: 40px !important;
+  color: #b42525 !important;
+}
+
+.Location {
+  font-size: 30px !important;
+}
+
+.Day {
+  font-size: 26x !important;
+}
+
+/* The links inside the sidebar */
+.SidePanel a {
+  text-align: center;
+  padding: 8px 8px 8px 8px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+  margin: 10px 0; /* Space between elements */
+}
+
+.SidePanel h3 {
+  text-align: left;
+  padding: 8px 8px 8px 8px;
+  font-size: 28px;
+}
+/* Change color on hover */
+.SidePanel a:hover {
+  color: #f1f1f1;
+}
+
+.WeatherIcon {
+  width: 35%; /* Adjust the size of the icon */
+  height: auto;
+  display: block;
+  margin: 0 auto; /* Center the icon */
+  padding-top: 10%;
+  filter: drop-shadow(1px 4px 1px #cfcfcf);
+}
