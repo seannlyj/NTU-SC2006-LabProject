@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+
+/* To make everything align to the left or as needed */
+.Landing {
+  display: flex;
+  flex-direction: column;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: row; /* Allows horizontal alignment of map and other panels */
+  justify-content: flex-start; /* Aligns all components starting from the left */
+}

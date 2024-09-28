@@ -1,5 +1,6 @@
 import React from "react";
 import './styling/App.css';
+import MapComponent from "./pages/landing/MapComponent";
 
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 
@@ -44,8 +45,7 @@ function App() {
             path="/landing"
             exact
             element={
-              <Landing
-              />
+                <Landing />
             }
             title="Landing"
           />

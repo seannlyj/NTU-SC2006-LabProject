@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import logo from "../../art/sunnysidelogo.PNG";
 import "../../styling/Landing.css";
 import ProfileButton from "./ProfileButton.js";
 import TemperatureDisplayPanel from "./TemperatureDisplayPanel.js";
 import SettingsPanel from "./SettingsPanel.js";
+import MapComponent from "./MapComponent"; // Import the MapComponent
 
 function Landing() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -15,13 +15,19 @@ function Landing() {
 
   return (
     <div className="Landing">
-      {/* Profile Button is a separate .js in case we want to use it on another page */}
-      <ProfileButton toggleSettingsPanel={toggleSettingsPanel} />
-      <TemperatureDisplayPanel />
-      <SettingsPanel
-        isOpen={isSettingsOpen}
-        toggleSettingsPanel={toggleSettingsPanel}
-      />
+      <div className="header">
+        <ProfileButton toggleSettingsPanel={toggleSettingsPanel} />
+      </div>
+      <div className="content-container">
+        <div className="map-wrapper">
+          <MapComponent />
+        </div>
+        <TemperatureDisplayPanel />
+        <SettingsPanel
+          isOpen={isSettingsOpen}
+          toggleSettingsPanel={toggleSettingsPanel}
+        />
+      </div>
     </div>
   );
 }
