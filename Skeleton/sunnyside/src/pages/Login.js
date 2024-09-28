@@ -1,5 +1,5 @@
 import logo from '../art/sunnysidelogo.PNG';
-import './Login.css';
+import '../styling/Login.css';
 
 function Login() {
   return (
@@ -30,15 +30,19 @@ function Login() {
 
             <div>
                 <button type="submit">Log In</button>
+
             </div>
+
             <div className="signup-container">
               <span className="signup-subtext">Don't have an account? </span>
-              <a href="/signup" className="sign-up">Sign up</a>
+              <a href="/signup" className="sign-up">Sign up </a>
+              <a href="/landing" className="sign-up">| Landing</a>
             </div>
         </form>
 
       </div>
     </div>
+
   );
 }
 
