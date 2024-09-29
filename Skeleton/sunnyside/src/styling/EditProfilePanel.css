@@ -1,0 +1,31 @@
+/* The sidebar panel itself */
+.EditProfile {
+  height: 100%; /* Full-height */
+  width: 0%; /* Initially hidden */
+  position: fixed; /* Stay in place */
+  top: 0;
+  right: 0; /* Change 'left' to 'right' for right-side panel */
+  background-color: white;
+  overflow-x: hidden; /* Disable horizontal scroll */
+  transition: 0.2s; /* Animation for sliding */
+
+  justify-content: center;
+}
+/* The sidebar when open */
+.EditProfile.open {
+  width: 30%; /* Adjust the width as needed */
+}
+
+.EditProfileTopPanel {
+  height: 600px;
+  background-color: #a3d4f7;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  display: flex; /* Use Flexbox */
+  flex-direction: column; /* Stack elements vertically */
+  align-items: center;
+  justify-content: center;
+}

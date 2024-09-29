@@ -3,14 +3,24 @@ import "../../styling/Landing.css";
 import ProfileButton from "./ProfileButton.js";
 import TemperatureDisplayPanel from "./TemperatureDisplayPanel.js";
 import SettingsPanel from "./SettingsPanel.js";
+import EditProfilePanel from "./EditProfilePanel.js";
 import MapComponent from "./MapComponent"; // Import the MapComponent
 
 function Landing() {
+  //Settings Panel
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Toggle the side panel open or close
   const toggleSettingsPanel = () => {
     setIsSettingsOpen(!isSettingsOpen);
+  };
+
+  //Edit Profile Panel
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+
+  // Toggle the side panel open or close
+  const toggleEditProfilePanel = () => {
+    setIsEditProfileOpen(!isEditProfileOpen);
   };
 
   return (
@@ -26,6 +36,11 @@ function Landing() {
         <SettingsPanel
           isOpen={isSettingsOpen}
           toggleSettingsPanel={toggleSettingsPanel}
+          toggleEditProfilePanel={toggleEditProfilePanel}
+        />
+        <EditProfilePanel
+          isOpen={isEditProfileOpen}
+          toggleEditProfilePanel={toggleEditProfilePanel}
         />
       </div>
     </div>

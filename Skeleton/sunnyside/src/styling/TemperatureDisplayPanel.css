@@ -1,16 +1,3 @@
-/* The button to toggle the sidebar */
-.toggle-button {
-  font-size: 30px;
-  cursor: pointer;
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-}
 /* The sidebar panel itself */
 .SidePanel {
   height: 100%; /* Full-height */
@@ -33,17 +20,23 @@
   cursor: pointer;
 }
 
-.Temperature {
-  font-size: 40px !important;
-  color: #b42525 !important;
+.SidePanel label {
+  font-family: "Inter", sans-serif;
+  text-align: center;
+
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+  margin: 10px 0; /* Space between elements */
 }
 
-.Location {
-  font-size: 30px !important;
-}
-
-.Day {
-  font-size: 26x !important;
+.SidePanel h3 {
+  font-family: "Inter", sans-serif;
+  font-weight: bold;
+  font-size: 25px !important;
+  margin-left: 35px;
 }
 
 /* The links inside the sidebar */
@@ -74,5 +67,108 @@
   display: block;
   margin: 0 auto; /* Center the icon */
   padding-top: 10%;
-  filter: drop-shadow(1px 4px 1px #cfcfcf);
+  filter: drop-shadow(1px 4px 0px #cfcfcf);
+}
+
+.Temperature {
+  font-weight: bold;
+  font-size: 54px !important;
+  color: black !important;
+}
+
+.Location {
+  font-weight: 200;
+  font-size: 28px !important;
+  color: black !important;
+}
+
+.Day {
+  font-weight: 300;
+  font-size: 18px !important;
+  color: black !important;
+}
+
+.WeatherInfoFromAPI {
+  border: 2px solid #fdd020;
+  border-radius: 25px;
+  padding: 0px;
+  margin: 10px auto;
+  width: 250px;
+}
+
+.WeatherName {
+  font-weight: bold;
+  font-size: 20px !important;
+  color: black !important;
+  margin-bottom: 5px !important;
+}
+
+.WeatherCutoffTime {
+  font-weight: normal;
+  font-size: 14px !important;
+  color: black !important;
+  margin-top: 0 !important;
+}
+
+.ActivitiesContainer {
+  max-height: 300px;
+  overflow-y: auto; /* Make it scrollable if content exceeds max height */
+  padding: 0px 20px 0px 0px; /* Add padding to the right */
+  margin-top: -20px;
+  margin-left: 35px;
+  width: 90%;
+}
+
+.Activity {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 40px 5px 40px;
+  margin: 10px 0;
+  border-radius: 50px;
+  border: 2px solid #b6b6b6;
+  box-shadow: 0 4px 0px #b6b6b6;
+  cursor: pointer;
+}
+.ActivityDetails {
+  flex: 1;
+}
+
+.ActivityDetails h4 {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.ActivityDetails p {
+  font-size: 16px;
+  margin-top: -15px;
+}
+
+.ActivityDistance {
+  margin-left: 10px;
+  font-weight: bold;
+  font-size: 33px !important;
+  color: black !important;
+}
+
+.Activity:hover {
+  background-color: #b6b6b6;
+}
+
+.ActivitiesContainer::-webkit-scrollbar {
+  width: 5px; /* Width of the scrollbar */
+}
+
+.ActivitiesContainer::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background of the scrollbar track */
+  border-radius: 10px; /* Rounded corners for the track */
+}
+
+.ActivitiesContainer::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the scrollbar thumb */
+  border-radius: 10px; /* Rounded corners for the thumb */
+}
+
+.ActivitiesContainer::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color of the scrollbar thumb on hover */
 }
