@@ -4,6 +4,8 @@ body {
 
 /* The sidebar panel itself */
 .Settings {
+  display: flex;
+  flex-direction: column;
   height: 100%; /* Full-height */
   width: 0%; /* Initially hidden */
   position: fixed; /* Stay in place */
@@ -12,12 +14,22 @@ body {
   background-color: white;
   overflow-x: hidden; /* Disable horizontal scroll */
   transition: 0.2s; /* Animation for sliding */
-  display: flex; /* to allow the panels to stack properly */
   justify-content: center;
 }
 /* The sidebar when open */
 .Settings.open {
   width: 30%; /* Adjust the width as needed */
+}
+
+.TopPanel {
+  height: 450px;
+  background-color: #fdd020;
+  width: 100%;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  display: flex; /* Use Flexbox */
+  flex-direction: column; /* Stack elements vertically */
+  align-items: center;
+  justify-content: center;
 }
 
 .TopPanelHeader {
@@ -37,42 +49,22 @@ body {
   transform: translateX(-50%);
 }
 
+.TopPanelHeader h4 {
+  color: white;
+  font-size: 30px;
+}
+
 .TopPanelHeader .ButtonContainer {
   align-items: center; /* Center vertically */
   margin-left: auto;
   display: flex;
   gap: 10px; /* Adjust gap as needed */
 }
-/* Close button inside the panel */
-.TopPanelHeader .CloseButton {
-  font-size: 64px;
-  color: white;
-  cursor: pointer;
-}
 
 .Settings .material-icons {
   font-size: 30px;
   color: white;
   cursor: pointer;
-}
-
-.TopPanelHeader h4 {
-  color: white;
-  font-size: 30px;
-}
-
-.TopPanel {
-  height: 450px;
-  background-color: #fdd020;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
-  display: flex; /* Use Flexbox */
-  flex-direction: column; /* Stack elements vertically */
-  align-items: center;
-  justify-content: center;
 }
 
 .TopPanel .ProfileIconCircle {
@@ -110,14 +102,14 @@ body {
   display: flex;
   gap: 10px; /* Space between tags */
   margin-top: 50px;
-  margin-bottom: -100px; /* Space above the tags */
+  margin-bottom: -50px; /* Space above the tags */
 }
 
 .TopPanel .PreferenceTag {
   background-color: white;
   font-weight: bold;
   color: #303030;
-  padding: 7px 30px;
+  padding: 7px 25px;
   border-radius: 50px;
   font-size: 14px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -125,7 +117,64 @@ body {
 
 .BottomPanel {
   flex: 1; /* Take up the remaining space */
-  background-color: black;
+  background-color: white;
   padding: 20px;
   box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  display: flex; /* Use Flexbox */
+  flex-direction: column; /* stacked vertically */
+  align-items: center; /* center horizontally */
+}
+
+.BottomPanel h4 {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.ActivityTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.ActivityTable th,
+.ActivityTable td {
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.ActivityTable th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  color: #333;
+}
+
+.ActivityTable td {
+  color: #555;
+}
+
+.LogoutButton {
+  margin-top: 50px;
+  border: none;
+  border-radius: 20px;
+  background-color: #ec5353;
+  color: white;
+  padding: 9px 150px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 3px 20px rgba(0, 0, 0, 0.3);
+  display: flex; /* Use Flexbox */
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center text horizontally */
+}
+
+.LogoutButton .material-icons {
+  margin-right: 10px;
+  font-size: 25px;
+}
+
+.LogoutButton:hover {
+  background-color: #ff1a1a;
 }

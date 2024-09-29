@@ -9,6 +9,11 @@ import MapComponent from "./MapComponent"; // Import the MapComponent
 function Landing() {
   //Settings Panel
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [preferences, setPreferences] = useState([
+    "Running",
+    "Swimming",
+    "Hiking",
+  ]);
 
   // Toggle the side panel open or close
   const toggleSettingsPanel = () => {
@@ -37,10 +42,13 @@ function Landing() {
           isOpen={isSettingsOpen}
           toggleSettingsPanel={toggleSettingsPanel}
           toggleEditProfilePanel={toggleEditProfilePanel}
+          preferences={preferences}
         />
         <EditProfilePanel
           isOpen={isEditProfileOpen}
           toggleEditProfilePanel={toggleEditProfilePanel}
+          preferences={preferences}
+          setPreferences={setPreferences}
         />
       </div>
     </div>

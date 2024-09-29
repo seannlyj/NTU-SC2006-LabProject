@@ -1,5 +1,7 @@
 /* The sidebar panel itself */
 .EditProfile {
+  display: flex;
+  flex-direction: column;
   height: 100%; /* Full-height */
   width: 0%; /* Initially hidden */
   position: fixed; /* Stay in place */
@@ -8,7 +10,6 @@
   background-color: white;
   overflow-x: hidden; /* Disable horizontal scroll */
   transition: 0.2s; /* Animation for sliding */
-
   justify-content: center;
 }
 /* The sidebar when open */
@@ -17,15 +18,189 @@
 }
 
 .EditProfileTopPanel {
-  height: 600px;
+  height: 500px;
   background-color: #a3d4f7;
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   box-sizing: border-box; /* Include padding and border in the element's total width and height */
   display: flex; /* Use Flexbox */
   flex-direction: column; /* Stack elements vertically */
   align-items: center;
   justify-content: center;
+}
+
+.EditProfileTopPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 10px; /* Add some padding if needed */
+  box-sizing: border-box;
+  position: absolute;
+  top: 20px;
+}
+
+.EditProfileTopPanelHeader .EditProfileTitleContainer {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.EditProfileTopPanelHeader h4 {
+  color: white;
+  font-size: 30px;
+}
+
+.EditProfileTopPanelHeader .ButtonContainer {
+  align-items: center; /* Center vertically */
+  margin-left: auto;
+  display: flex;
+  gap: 10px; /* Adjust gap as needed */
+}
+
+.EditProfileTopPanelHeader .material-icons {
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+}
+
+.EditProfileTopPanel .ProfileIconCircle {
+  margin-top: 50px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: white;
+  color: white;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.EditProfileTopPanel .ProfileIcon {
+  font-size: 50px;
+  color: black;
+}
+
+.EditProfileTopPanel .InputContainer {
+  font-family: "Inter", sans-serif;
+  font-weight: bold;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.EditProfileTopPanel .InputContainer label {
+  font-size: 15px;
+}
+
+.EditProfileForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
+  margin-top: 20px;
+  width: 100%; /* Ensure the form takes full width */
+}
+
+.InputContainer {
+  margin-bottom: 15px;
+  width: 50%;
+}
+
+.InputContainer label {
+  display: block;
+  margin-bottom: 0px;
+  font-weight: bold;
+}
+
+.InputContainer input {
+  font-family: "Inter", sans-serif;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  box-sizing: border-box;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 15px;
+}
+
+.EditProfileTopPanel button {
+  width: 45%;
+
+  margin-top: 20px;
+  border: none;
+  border-radius: 20px;
+  background-color: #fdd020;
+  color: white;
+  padding: 9px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+
+  box-shadow: 0 3px 20px rgba(0, 0, 0, 0.3);
+}
+
+.EditProfileTopPanel .SaveButton:hover {
+  background-color: rgb(255, 187, 0);
+}
+
+.EditProfileBottomPanel {
+  flex: 1; /* Take up the remaining space */
+  background-color: white;
+  padding: 20px;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  display: flex; /* Use Flexbox */
+  flex-direction: column; /* stacked vertically */
+  align-items: center; /* center horizontally */
+}
+
+.ChangePasswordButton {
+  margin-top: 50px;
+  border: none;
+  border-radius: 20px;
+  background-color: #fdd020;
+  color: white;
+  padding: 9px 125px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 3px 20px rgba(0, 0, 0, 0.3);
+  display: flex; /* Use Flexbox */
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center text horizontally */
+}
+
+.ChangePasswordButton .material-icons {
+  margin-right: 10px;
+  font-size: 25px;
+}
+
+.ChangePasswordButton:hover {
+  background-color: rgb(255, 187, 0);
+}
+.ActivityTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+.ActivityTable th,
+.ActivityTable td {
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  text-align: center;
+  cursor: pointer; /* Indicate that rows are clickable */
+}
+
+.ActivityTable th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  color: #333;
+}
+
+.ActivityTable td.selected {
+  background-color: #d1e7dd; /* Highlight selected cell */
+  color: #155724; /* Change text color for selected cell */
 }
