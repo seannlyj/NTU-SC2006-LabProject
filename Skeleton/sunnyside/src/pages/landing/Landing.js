@@ -7,8 +7,9 @@ import MapComponent from "./MapComponent"; // Import the MapComponent
 import HintPanel from "./HintPanel.js";
 import React, { useState, useEffect } from "react";
 
-function Landing() {
+const Landing = () => {
   //Settings Panel
+  const [selectedActivity, setSelectedActivity] = useState(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Toggle the side panel open or close
@@ -128,7 +129,7 @@ function Landing() {
       </div>
       <div className="content-container">
         <div className="map-wrapper">
-          <MapComponent />
+          <MapComponent selectedActivity={selectedActivity} />
         </div>
         <TemperatureDisplayPanel
           weather={weather}
@@ -153,7 +154,7 @@ function Landing() {
       </div>
     </div>
   );
-}
+};
 
 // Mock API functions
 //Modify variables here to test different weather conditions
