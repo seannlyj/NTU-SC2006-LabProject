@@ -5,17 +5,25 @@ import 'leaflet/dist/leaflet.css';
 import "../../styling/MapComponent.css";
 import MarkerClusterGroup from 'react-leaflet-cluster';
 
-const MapComponent = () => {
+const MapComponent = ({ selectedActivity }) => {
   // Pinned locations should be passed as an array
   const markers = [
     {
-        geocode: [1.3521, 103.8198],
-        popUp: "Name of activity for location 1"
+      geocode: [1.3521, 103.8198],
+      popUp: "Gym",
     },
     {
-        geocode: [1.3531, 103.9198],
-        popUp: "Name of activity for location 2"
-    }
+      geocode: [1.3531, 103.8199],
+      popUp: "Indoor Yoga",
+    },
+    {
+      geocode: [1.3541, 103.8200],
+      popUp: "Boxing Gym",
+    },
+    {
+      geocode: [1.3551, 103.8201],
+      popUp: "Swimming Pool",
+    },
     ];
 
 
@@ -46,6 +54,9 @@ const MapComponent = () => {
     const map = useMap();
     
     useEffect(() => {
+      if(selectedActivity && selectedActivity.geocode) {
+        map.setView(selectedActivity.geocode, 20);
+      }
       // Check if the zoom control is already added
       if (!zoomControlRef.current) {
         // Add zoom control at the bottom left
@@ -59,7 +70,7 @@ const MapComponent = () => {
           zoomControlRef.current = null; // Reset the ref
         }
       };
-    }, [map]);
+    }, [selectedActivity,map]);
 
     return null;
   };

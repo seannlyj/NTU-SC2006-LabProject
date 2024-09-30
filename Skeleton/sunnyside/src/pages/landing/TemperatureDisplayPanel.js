@@ -11,7 +11,7 @@ import windy from "../../art/weather-icons/windy.png";
 
 import React, { useState, useEffect } from "react";
 
-function TemperatureDisplayPanel() {
+function TemperatureDisplayPanel({ onActivityClick }) {
   const [weather, setWeather] = useState("Fair(Day)"); // Set variable for weather icon and set it's default to cloud
   const [weatherName, setWeatherName] = useState("Fair(Day)");
   const [weatherCutoffTime, setWeatherCutoffTime] = useState("11:30 to 13:30");
@@ -123,7 +123,7 @@ function TemperatureDisplayPanel() {
       <h3>NEARBY ACTIVITIES</h3>
       <div className="ActivitiesContainer">
         {activities.map((activity, index) => (
-          <div className="Activity" key={index}>
+          <div className="Activity" key={index} onClick={() => onActivityClick(activity)}>
             <div className="ActivityDetails">
               <h4>{activity.name}</h4>
               <p>{activity.description}</p>
@@ -207,21 +207,25 @@ async function fetchActivitiesFromAPI() {
         name: "Gym",
         description: "Lorem ipsum dolor",
         distance: "0.5 KM",
+        geocode: [1.3521, 103.8198], // Example coordinates
       },
       {
         name: "Indoor Yoga",
         description: "Lorem ipsum dolor",
         distance: "1.3 KM",
+        geocode: [1.3531, 103.8199],
       },
       {
         name: "Boxing Gym",
         description: "Lorem ipsum dolor",
         distance: "2.0 KM",
+        geocode: [1.3541, 103.8200],
       },
       {
         name: "Swimming Pool",
         description: "Lorem ipsum dolor",
         distance: "2.3 KM",
+        geocode: [1.3551, 103.8201],
       },
       // Add more activities as needed
     ],

@@ -6,8 +6,9 @@ import SettingsPanel from "./SettingsPanel.js";
 import EditProfilePanel from "./EditProfilePanel.js";
 import MapComponent from "./MapComponent"; // Import the MapComponent
 
-function Landing() {
+const Landing = () => {
   //Settings Panel
+  const [selectedActivity, setSelectedActivity] = useState(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [preferences, setPreferences] = useState([
     "Running",
@@ -28,6 +29,10 @@ function Landing() {
     setIsEditProfileOpen(!isEditProfileOpen);
   };
 
+  const handleActivityClick = (activity) => {
+    setSelectedActivity(activity); // Set the selected activity (includes geocode)
+  };
+
   return (
     <div className="Landing">
       <div className="header">
@@ -35,9 +40,9 @@ function Landing() {
       </div>
       <div className="content-container">
         <div className="map-wrapper">
-          <MapComponent />
+          <MapComponent selectedActivity={selectedActivity}/>
         </div>
-        <TemperatureDisplayPanel />
+        <TemperatureDisplayPanel onActivityClick={handleActivityClick}/>
         <SettingsPanel
           isOpen={isSettingsOpen}
           toggleSettingsPanel={toggleSettingsPanel}
