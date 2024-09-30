@@ -11,100 +11,26 @@ import windy from "../../art/weather-icons/windy.png";
 
 import React, { useState, useEffect } from "react";
 
-function TemperatureDisplayPanel() {
-  const [weather, setWeather] = useState("Fair(Day)"); // Set variable for weather icon and set it's default to cloud
-  const [weatherName, setWeatherName] = useState("Fair(Day)");
-  const [weatherCutoffTime, setWeatherCutoffTime] = useState("11:30 to 13:30");
-
-  const [temperature, setTemperature] = useState("0");
-  const [location, setLocation] = useState("ANG MO KIO");
+function TemperatureDisplayPanel({
+  weather,
+  weatherName,
+  weatherCutoffTime,
+  temperature,
+  location,
+  activities,
+}) {
   const [dayTime, setDayTime] = useState("FRIDAY, 00:00");
-  const [activities, setActivities] = useState([]);
 
   //use a useEffect to fetch info from individual APIs
   useEffect(() => {
-    //These functions will call a function to fetch data from APIs
-    //Currently, the fetchers for API data are mock functions
-    fetchWeatherData();
-    fetchLocationData();
+    //Mock function for daytime
     fetchDayTimeData();
-    fetchNearbyActivities();
   }, []);
-
-  const fetchWeatherData = async () => {
-    //Mock function api call (to replace later on)
-    const weatherData = await fetchWeatherFromAPI();
-    setWeather(weatherData.weather);
-    setTemperature(`${weatherData.temperature}`);
-    setWeatherCutoffTime(weatherData.cutOffTiming);
-
-    //Setting weather name based on weather provided by NEA API
-    switch (weatherData.weather) {
-      case "Fair(Day)":
-      case "Fair":
-      case "Fair(Night)":
-        setWeatherName("FAIR");
-        break;
-      case "Warm":
-        setWeatherName("WARM");
-        break;
-      case "Partly Cloudy":
-      case "Cloudy":
-      case "Partly Cloudy(Day)":
-      case "Partly Cloudy(Night)":
-        setWeatherName("CLOUDY");
-        break;
-      case "Hazy":
-      case "Slightly Hazy":
-        setWeatherName("HAZY");
-        break;
-      case "Mist":
-        setWeatherName("MISTY");
-        break;
-      case "Fog":
-        setWeatherName("FOGGY");
-        break;
-      case "Windy":
-        setWeatherName("WINDY");
-        break;
-      case "Passing Showers":
-      case "Light Showers":
-      case "Showers":
-      case "Heavy Showers":
-        setWeatherName("SHOWERS");
-        break;
-      case "Light Rain":
-      case "Moderate Rain":
-      case "Heavy Rain":
-        setWeatherName("RAINY");
-        break;
-      case "Thundery Showers":
-      case "Heavy Thundery Showers":
-      case "Heavy Thunder Showers with Gusty Wind":
-        setWeatherName("THUNDERSTORM");
-        break;
-      default:
-        setWeatherName("ERROR");
-        break;
-    }
-  };
-
-  const fetchLocationData = async () => {
-    //Mock function api call (to replace later on)
-    const locationData = await fetchLocationFromAPI();
-    setLocation(locationData.location);
-  };
 
   const fetchDayTimeData = async () => {
     //Mock function api call (to replace later on)
     const dayTimeData = await fetchDayTimeFromAPI();
     setDayTime(dayTimeData.dayTime);
-  };
-
-  const fetchNearbyActivities = async () => {
-    //Mock function api call (to replace later on)
-    const activitiesData = await fetchActivitiesFromAPI();
-    setActivities(activitiesData.activities);
   };
 
   const weatherIcon = getWeatherIcon(weather);
@@ -181,51 +107,8 @@ function getWeatherIcon(weather) {
   }
 }
 
-// Mock API functions
-//Modify variables here to test different weather conditions
-async function fetchWeatherFromAPI() {
-  return {
-    weather: "Partly Cloudy",
-    temperature: 25,
-    cutOffTiming: "11:30 to 13:30",
-  };
-}
-
-async function fetchLocationFromAPI() {
-  return { location: "ANG MO KIO" };
-}
-
 async function fetchDayTimeFromAPI() {
   return { dayTime: "FRIDAY, 12:00" };
-}
-
-async function fetchActivitiesFromAPI() {
-  // Mock data for nearby activities
-  return {
-    activities: [
-      {
-        name: "Gym",
-        description: "Lorem ipsum dolor",
-        distance: "0.5 KM",
-      },
-      {
-        name: "Indoor Yoga",
-        description: "Lorem ipsum dolor",
-        distance: "1.3 KM",
-      },
-      {
-        name: "Boxing Gym",
-        description: "Lorem ipsum dolor",
-        distance: "2.0 KM",
-      },
-      {
-        name: "Swimming Pool",
-        description: "Lorem ipsum dolor",
-        distance: "2.3 KM",
-      },
-      // Add more activities as needed
-    ],
-  };
 }
 
 export default TemperatureDisplayPanel;
