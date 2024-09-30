@@ -18,6 +18,7 @@ function TemperatureDisplayPanel({
   temperature,
   location,
   activities,
+  onActivityClick,
 }) {
   const [dayTime, setDayTime] = useState("FRIDAY, 00:00");
 
@@ -49,7 +50,11 @@ function TemperatureDisplayPanel({
       <h3>NEARBY ACTIVITIES</h3>
       <div className="ActivitiesContainer">
         {activities.map((activity, index) => (
-          <div className="Activity" key={index}>
+          <div
+            className="Activity"
+            key={index}
+            onClick={() => onActivityClick(activity)} // Handle click
+          >
             <div className="ActivityDetails">
               <h4>{activity.name}</h4>
               <p>{activity.description}</p>

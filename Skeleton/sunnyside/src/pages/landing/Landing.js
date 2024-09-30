@@ -9,7 +9,6 @@ import React, { useState, useEffect } from "react";
 
 const Landing = () => {
   //Settings Panel
-  const [selectedActivity, setSelectedActivity] = useState(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Toggle the side panel open or close
@@ -41,6 +40,7 @@ const Landing = () => {
 
   //Activity related variables
   const [activities, setActivities] = useState([]);
+  const [selectedActivity, setSelectedActivity] = useState(null); //For activity panel (To display selected activity when user clicks on one of the activities in TemperatureDisplayPanel)
 
   //use a useEffect to fetch info from individual APIs
   useEffect(() => {
@@ -121,6 +121,10 @@ const Landing = () => {
     setActivities(activitiesData.activities);
   };
 
+  const handleActivityClick = (activity) => {
+    setSelectedActivity(activity);
+  };
+
   return (
     <div className="Landing">
       <div className="header">
@@ -138,6 +142,7 @@ const Landing = () => {
           temperature={temperature}
           location={location}
           activities={activities}
+          onActivityClick={handleActivityClick} // Pass the handler
         />
         <SettingsPanel
           isOpen={isSettingsOpen}
