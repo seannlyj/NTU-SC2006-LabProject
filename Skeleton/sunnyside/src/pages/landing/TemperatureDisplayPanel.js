@@ -49,11 +49,7 @@ function TemperatureDisplayPanel({
       <h3>NEARBY ACTIVITIES</h3>
       <div className="ActivitiesContainer">
         {activities.map((activity, index) => (
-          <div
-            className="Activity"
-            key={index}
-            onClick={() => onActivityClick(activity)}
-          >
+          <div className="Activity" key={index}>
             <div className="ActivityDetails">
               <h4>{activity.name}</h4>
               <p>{activity.description}</p>
