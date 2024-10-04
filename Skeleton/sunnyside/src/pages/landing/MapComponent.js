@@ -118,13 +118,14 @@ const MapComponent = ({ selectedActivity }) => {
                   >
                     Log Activity
                   </button>
-                  <p className="rating-maintext">Rate the activity!</p>
+                  <p className="rating-maintext">Rate the activity!<br></br>(1-Horrible, 5-Amazing)</p>
                   <div className="rating-slider">
                     <label>{marker.rating}</label>
                     <input
                       type="range"
                       min="1"
                       max="5"
+                      step="1"
                       defaultValue={marker.rating}
                       onChange={(e) =>
                         console.log(
@@ -132,6 +133,13 @@ const MapComponent = ({ selectedActivity }) => {
                         )
                       }
                     />
+                    <div className = "rating-labels">
+                      <span>1</span>
+                      <span>2</span>
+                      <span>3</span>
+                      <span>4</span>
+                      <span>5</span>
+                    </div>
                   </div>
                   <button
                     className="rating-button"
