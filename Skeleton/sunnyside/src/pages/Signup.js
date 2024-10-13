@@ -23,7 +23,7 @@ const SignUp = () => {
 
     try {
       // Send signup request to the backend
-      const response = await axios.post('http://localhost:5000/api/users', {
+      const response = await axios.post('/api/users', {
         firstname: firstName,
         lastname: lastName,
         email,

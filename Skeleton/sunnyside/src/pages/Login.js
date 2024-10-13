@@ -7,28 +7,18 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [token, setToken] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
+    console.log(email);
+    console.log(password);
 
     try {
       // Send login request to the backend
-      const response = await axios.post('http://localhost:5000/api/users/login', { // Use the correct endpoint for login
-        email,
-        password,
-      });
+      const response = await axios.post('/api/users', email);
 
-      // If login is successful, store the token and possibly redirect the user
-      const { token } = response.data; // Destructure the token from response
-      setToken(token); // Store the token in the state
-
-      // Example: Store the token in localStorage (or sessionStorage)
-      localStorage.setItem('authToken', token);
-
-      // Example: Redirect to a protected route after login
-      //window.location.href = "/dashboard";
       
+
     } catch (error) {
       // Handle login failure
       const message = error.response?.data?.message || 'Login failed. Please try again.';
