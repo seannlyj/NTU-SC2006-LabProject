@@ -42,27 +42,34 @@ const Landing = () => {
   const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState(null); //For activity panel (To display selected activity when user clicks on one of the activities in TemperatureDisplayPanel)
 
+
+  // Insert GPS location here
+  // Latitude and longitude (you can set them based on user location or a default location)
+  const [latitude, setLatitude] = useState(1.3521);
+  const [longitude, setLongitude] = useState(103.8198);
+
+
   //use a useEffect to fetch info from individual APIs
   useEffect(() => {
     //These functions will call a function to fetch data from APIs
     //Currently, the fetchers for API data are mock functions
-    fetchWeatherData();
-    fetchLocationData();
-    fetchNearbyActivities();
-  }, []);
+    fetchWeatherData(latitude,longitude);
+    fetchLocationData(latitude,longitude);
+    fetchNearbyActivities(latitude,longitude);
+  }, [latitude,longitude]);
 
-  const fetchWeatherData = async () => {
+  const fetchWeatherData = async (lat,lon) => {
     //Mock function api call (to replace later on)
-    const weatherData = await fetchWeatherFromAPI();
+    const weatherData = await fetchWeatherFromAPI(lat,lon);
     setWeather(weatherData.weather);
     setTemperature(`${weatherData.temperature}`);
     setWeatherCutoffTime(weatherData.cutOffTiming);
 
     //Setting weather name based on weather provided by NEA API
     switch (weatherData.weather) {
-      case "Fair(Day)":
+      case "Fair (Day)":
       case "Fair":
-      case "Fair(Night)":
+      case "Fair (Night)":
         setWeatherName("FAIR");
         break;
       case "Warm":
@@ -70,8 +77,8 @@ const Landing = () => {
         break;
       case "Partly Cloudy":
       case "Cloudy":
-      case "Partly Cloudy(Day)":
-      case "Partly Cloudy(Night)":
+      case "Partly Cloudy (Day)":
+      case "Partly Cloudy (Night)":
         setWeatherName("CLOUDY");
         break;
       case "Hazy":
@@ -109,15 +116,15 @@ const Landing = () => {
     }
   };
 
-  const fetchLocationData = async () => {
+  const fetchLocationData = async (lat,lon) => {
     //Mock function api call (to replace later on)
-    const locationData = await fetchLocationFromAPI();
+    const locationData = await fetchLocationFromAPI(lat,lon);
     setLocation(locationData.location);
   };
 
-  const fetchNearbyActivities = async () => {
+  const fetchNearbyActivities = async (lat,lon) => {
     //Mock function api call (to replace later on)
-    const activitiesData = await fetchActivitiesFromAPI();
+    const activitiesData = await fetchActivitiesFromAPI(lat,lon);
     setActivities(activitiesData.activities);
   };
 
@@ -163,19 +170,157 @@ const Landing = () => {
 
 // Mock API functions
 //Modify variables here to test different weather conditions
-async function fetchWeatherFromAPI() {
-  return {
-    weather: "Partly Cloudy",
-    temperature: 25,
-    cutOffTiming: "11:30 to 13:30",
-  };
+async function fetchWeatherFromAPI(lat,lon) {
+  // Haversine formula to calculate distance between two points
+  function haversineDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in kilometers
+    return distance;
+  }
+
+  let closestArea = null;
+  let closestDistance = Infinity;
+  let forecastForClosest = null;
+  let closestTempStation = null;
+  let closestTempDeviceId = null;
+  let closestTempDistance = Infinity;
+  let temperatureForClosest = null;
+
+  try {
+    // Fetch 2-hour weather forecast data
+    const weatherResponse = await fetch("https://api.data.gov.sg/v1/environment/2-hour-weather-forecast");
+    if (!weatherResponse.ok) {
+      throw new Error("Failed to fetch weather data");
+    }
+
+    // Fetch air temperature data
+    const tempResponse = await fetch("https://api-open.data.gov.sg/v2/real-time/api/air-temperature");
+    if (!tempResponse.ok) {
+      throw new Error("Failed to fetch temperature data");
+    }
+
+    const weatherData = await weatherResponse.json();
+    const tempData = await tempResponse.json();
+
+    const forecasts = weatherData.items[0].forecasts;
+    const validPeriod = weatherData.items[0].valid_period; // Extracting valid period
+    const areaMetadata = weatherData.area_metadata; // Assuming this is part of the weatherData
+
+    // Loop through area metadata to find the closest area
+    areaMetadata.forEach(area => {
+      const { latitude, longitude } = area.label_location;
+      const distance = haversineDistance(lat, lon, latitude, longitude);
+
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestArea = area.name;
+      }
+    });
+
+    // Find the forecast for the closest area
+    forecasts.forEach(forecast => {
+      if (forecast.area === closestArea) {
+        forecastForClosest = forecast.forecast;
+      }
+    });
+
+    // Loop through temperature stations to find the closest temperature station
+    tempData.data.stations.forEach(station => {
+      const { latitude, longitude } = station.location;
+      const distance = haversineDistance(lat, lon, latitude, longitude);
+
+      if (distance < closestTempDistance) {
+        closestTempDistance = distance;
+        closestTempStation = station.name; // Store the closest station name
+        closestTempDeviceId = station.deviceId; // Store the deviceId for comparison
+      }
+    });
+
+    // Find the temperature for the closest station
+    tempData.data.readings[0].data.forEach(reading => {
+      if (reading.stationId === closestTempDeviceId) {
+        console.log(reading.stationId);
+        temperatureForClosest = reading.value; // Get the temperature value
+      }
+    });
+
+    console.log(temperatureForClosest);
+    console.log(forecastForClosest);
+    // Extract and format cut-off timing
+    const startTime = new Date(validPeriod.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const endTime = new Date(validPeriod.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    return {
+      weather: forecastForClosest,
+      cutOffTiming: `${startTime}-${endTime}`, // Formatting cut-off timing
+      temperature: temperatureForClosest, // Returning temperature for the closest station
+    };
+  } catch (error) {
+    console.error("Error fetching weather data:", error);
+    // Return some default data in case of an error
+    return {
+      weather: "Unknown",
+      cutOffTiming: "N/A",
+      temperature: 0,
+    };
+  }
+
 }
 
-async function fetchLocationFromAPI() {
-  return { location: "ANG MO KIO" };
+async function fetchLocationFromAPI(lat,lon) {
+  const weatherResponse = await fetch("https://api.data.gov.sg/v1/environment/2-hour-weather-forecast");
+  
+  // Check if the response is okay (status in the range 200-299)
+  if (!weatherResponse.ok) {
+    throw new Error("Failed to fetch weather data");
+  }
+
+  // Parse the JSON response
+  const forecastResponse = await weatherResponse.json();
+
+  let nearestLocation = null; // To store the nearest location
+  let nearestDistance = Infinity; // Start with a very large distance
+
+  // Function to calculate the distance between two lat/lon points using Haversine formula
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a = 
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in kilometers
+  }
+
+  // Loop through area_metadata to find the nearest area
+  forecastResponse.area_metadata.forEach(area => {
+    const areaLat = area.label_location.latitude;
+    const areaLon = area.label_location.longitude;
+    
+    // Calculate the distance from the input coordinates to this area
+    const distance = calculateDistance(lat, lon, areaLat, areaLon);
+
+    // Update nearest location if this area is closer
+    if (distance < nearestDistance) {
+      nearestDistance = distance;
+      nearestLocation = area.name; // Update nearest location name
+    }
+  });
+
+  return { location: nearestLocation };
 }
 
-async function fetchActivitiesFromAPI() {
+
+async function fetchActivitiesFromAPI(lat,lon) {
   // Mock data for nearby activities
   return {
     activities: [

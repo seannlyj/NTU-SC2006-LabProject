@@ -4,16 +4,16 @@ import "../../styling/HintPanel.css";
 function HintPanel({ weather }) {
   const getHint = (weather) => {
     switch (weather) {
-      case "Fair(Day)":
+      case "Fair (Day)":
       case "Fair":
-      case "Fair(Night)":
+      case "Fair (Night)":
         return "It's a fair day! Great for outdoor activities.";
       case "Warm":
         return "It's warm outside. Stay hydrated!";
       case "Partly Cloudy":
       case "Cloudy":
-      case "Partly Cloudy(Day)":
-      case "Partly Cloudy(Night)":
+      case "Partly Cloudy (Day)":
+      case "Partly Cloudy (Night)":
         return "It's cloudy. You might want to carry an umbrella.";
       case "Hazy":
       case "Slightly Hazy":
