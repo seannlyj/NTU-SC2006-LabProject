@@ -1,5 +1,6 @@
 import logo from "../../art/sunnysidelogo.PNG";
 import React, { useState, useEffect } from "react";
+import ChangePW from "./ChangePW";
 import "../../styling/EditProfilePanel.css";
 
 function EditProfilePanel({
@@ -26,6 +27,8 @@ function EditProfilePanel({
   // State to hold first name and last name
   const [firstName, setFirstName] = useState("John");
   const [lastName, setLastName] = useState("Doe");
+
+  const [isResetPWPanelOpen, setIsResetPWPanelOpen] = useState(false);
 
   // Mock function to simulate updating the name in a database
   const updateNameInDatabase = (firstName, lastName) => {
@@ -157,13 +160,18 @@ function EditProfilePanel({
 
           <button
             className="ChangePasswordButton"
-            onClick={() => alert("Change Password here")}
+            // onClick={() => alert("Change Password here")}
+            onClick={() => setIsResetPWPanelOpen(true)}
           >
             <span className="material-icons ">password</span>
             Change Password
           </button>
         </div>
       </div>
+      <ChangePW
+        isOpen={isResetPWPanelOpen}
+        onClose={() => setIsResetPWPanelOpen(false)}
+      />
     </div>
   );
 }
