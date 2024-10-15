@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../art/sunnysidelogo.PNG';
 import '../styling/Signup.css';
@@ -12,8 +13,15 @@ const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
+
+    console.log(`Entered name: ${firstName} ${lastName}`);
+    console.log(`Entered email: ${email}`);
+    console.log(`Entered password: ${[password]}`);
+    console.log(`Entered confirm password: ${confirmPassword}`);
 
     // Check if passwords match
     if (password !== confirmPassword) {
@@ -23,16 +31,14 @@ const SignUp = () => {
 
     try {
       // Send signup request to the backend
-      const response = await axios.post('/api/users', {
-        firstname: firstName,
-        lastname: lastName,
-        email,
-        password,
-      });
+      const data = {"firstname":firstName, "lastname": lastName, "email":email, "password":password};
+      const response = await axios.post('/api/users/', data);
 
       // If signup is successful, set success message
-      setSuccessMessage("Account created successfully! Please log in.");
       setErrorMessage(''); // Clear error message if signup is successful
+
+      navigate("/login");
+
     } catch (error) {
       // Handle signup failure
       const message = error.response?.data?.message || 'Signup failed. Please try again.';

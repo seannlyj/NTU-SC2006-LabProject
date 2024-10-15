@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../art/sunnysidelogo.PNG';
 import '../styling/Login.css';
@@ -8,16 +9,32 @@ function Login() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-    console.log(email);
-    console.log(password);
+    console.log(`Entered email: ${email}`);
+    console.log(`Entered password: ${password}`);
 
     try {
       // Send login request to the backend
-      const response = await axios.post('/api/users', email);
+      const data = {"email":email};
+      console.log(`Finding user`);
+      const user_json = await axios.get('/api/users/'.concat(email));
+      console.log(`Found user`);
 
-      
+      // const user = JSON.parse(user_json);
+      const correct_pw = user_json.password;
+
+      console.log(`Checking password`);
+      if(password !== correct_pw){
+        setErrorMessage("Wrong Password");
+      }
+      else{
+        navigate("/landing");
+      }
+
+      navigate("/landing");
 
     } catch (error) {
       // Handle login failure
