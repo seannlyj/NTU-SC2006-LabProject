@@ -34,8 +34,6 @@ function Login() {
         navigate("/landing");
       }
 
-      navigate("/landing");
-
     } catch (error) {
       // Handle login failure
       const message = error.response?.data?.message || 'Login failed. Please try again.';
