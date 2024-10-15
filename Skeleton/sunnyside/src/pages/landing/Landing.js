@@ -57,8 +57,9 @@ const Landing = () => {
           setGeoError(null); // Reset error if geolocation is successful
         },
         (error) => {
-          console.error("Error getting geolocation:", error);
-          setGeoError("Unable to retrieve location. Please enable location services.");
+          console.error("Unable to retrieve location, setting default location");
+          setLatitude(1.3521); // Default to Singapore's latitude
+          setLongitude(103.8198); // Default to Singapore's longitude
         }
       );
     } else {
