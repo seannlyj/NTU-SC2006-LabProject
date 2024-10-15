@@ -3,12 +3,12 @@ import ProfileButton from "./ProfileButton.js";
 import TemperatureDisplayPanel from "./TemperatureDisplayPanel.js";
 import SettingsPanel from "./SettingsPanel.js";
 import EditProfilePanel from "./EditProfilePanel.js";
-import MapComponent from "./MapComponent"; // Import the MapComponent
+import MapComponent from "./MapComponent";
 import HintPanel from "./HintPanel.js";
 import React, { useState, useEffect } from "react";
 
 const Landing = () => {
-  //Settings Panel
+  // Settings Panel
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Toggle the side panel open or close
@@ -16,7 +16,7 @@ const Landing = () => {
     setIsSettingsOpen(!isSettingsOpen);
   };
 
-  //Edit Profile Panel
+  // Edit Profile Panel
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
   // Toggle the side panel open or close
@@ -24,99 +24,85 @@ const Landing = () => {
     setIsEditProfileOpen(!isEditProfileOpen);
   };
 
-  //User related variables
+  // User related variables
   const [preferences, setPreferences] = useState([
     "Running",
     "Swimming",
     "Hiking",
   ]);
 
-  //Weather related variables
-  const [weather, setWeather] = useState("Fair(Day)"); // Set variable for weather icon and set it's default to cloud
+  // Weather related variables
+  const [weather, setWeather] = useState("Fair(Day)");
   const [weatherName, setWeatherName] = useState("Fair(Day)");
   const [weatherCutoffTime, setWeatherCutoffTime] = useState("11:30 to 13:30");
   const [temperature, setTemperature] = useState("0");
   const [location, setLocation] = useState("ANG MO KIO");
 
-  //Activity related variables
+  // Activity related variables
   const [activities, setActivities] = useState([]);
-  const [selectedActivity, setSelectedActivity] = useState(null); //For activity panel (To display selected activity when user clicks on one of the activities in TemperatureDisplayPanel)
+  const [selectedActivity, setSelectedActivity] = useState(null);
 
-  //use a useEffect to fetch info from individual APIs
+  // Fetch data from APIs
   useEffect(() => {
-    //These functions will call a function to fetch data from APIs
-    //Currently, the fetchers for API data are mock functions
     fetchWeatherData();
     fetchLocationData();
     fetchNearbyActivities();
   }, []);
 
   const fetchWeatherData = async () => {
-    //Mock function api call (to replace later on)
     const weatherData = await fetchWeatherFromAPI();
     setWeather(weatherData.weather);
     setTemperature(`${weatherData.temperature}`);
     setWeatherCutoffTime(weatherData.cutOffTiming);
+    setWeatherName(getWeatherName(weatherData.weather));
+  };
 
-    //Setting weather name based on weather provided by NEA API
-    switch (weatherData.weather) {
+  const getWeatherName = (weather) => {
+    switch (weather) {
       case "Fair(Day)":
       case "Fair":
       case "Fair(Night)":
-        setWeatherName("FAIR");
-        break;
+        return "FAIR";
       case "Warm":
-        setWeatherName("WARM");
-        break;
+        return "WARM";
       case "Partly Cloudy":
       case "Cloudy":
       case "Partly Cloudy(Day)":
       case "Partly Cloudy(Night)":
-        setWeatherName("CLOUDY");
-        break;
+        return "CLOUDY";
       case "Hazy":
       case "Slightly Hazy":
-        setWeatherName("HAZY");
-        break;
+        return "HAZY";
       case "Mist":
-        setWeatherName("MISTY");
-        break;
+        return "MISTY";
       case "Fog":
-        setWeatherName("FOGGY");
-        break;
+        return "FOGGY";
       case "Windy":
-        setWeatherName("WINDY");
-        break;
+        return "WINDY";
       case "Passing Showers":
       case "Light Showers":
       case "Showers":
       case "Heavy Showers":
-        setWeatherName("SHOWERS");
-        break;
+        return "SHOWERS";
       case "Light Rain":
       case "Moderate Rain":
       case "Heavy Rain":
-        setWeatherName("RAINY");
-        break;
+        return "RAINY";
       case "Thundery Showers":
       case "Heavy Thundery Showers":
       case "Heavy Thunder Showers with Gusty Wind":
-        setWeatherName("THUNDERSTORM");
-        break;
+        return "THUNDERSTORM";
       default:
-        setWeatherName("ERROR");
-        break;
+        return "ERROR";
     }
   };
 
   const fetchLocationData = async () => {
-    //Mock function api call (to replace later on)
     const locationData = await fetchLocationFromAPI();
     setLocation(locationData.location);
   };
 
   const fetchNearbyActivities = async () => {
-    //Mock function api call (to replace later on)
     const activitiesData = await fetchActivitiesFromAPI();
     setActivities(activitiesData.activities);
   };
@@ -142,19 +128,20 @@ const Landing = () => {
           temperature={temperature}
           location={location}
           activities={activities}
-          onActivityClick={handleActivityClick} // Pass the handler
+          onActivityClick={handleActivityClick}
         />
         <SettingsPanel
           isOpen={isSettingsOpen}
           toggleSettingsPanel={toggleSettingsPanel}
           toggleEditProfilePanel={toggleEditProfilePanel}
           preferences={preferences}
+          setPreferences={setPreferences} // Add setPreferences to update preferences
         />
         <EditProfilePanel
           isOpen={isEditProfileOpen}
           toggleEditProfilePanel={toggleEditProfilePanel}
           preferences={preferences}
-          setPreferences={setPreferences}
+          setPreferences={setPreferences} // Ensure changes are reflected
         />
       </div>
     </div>
@@ -162,7 +149,6 @@ const Landing = () => {
 };
 
 // Mock API functions
-//Modify variables here to test different weather conditions
 async function fetchWeatherFromAPI() {
   return {
     weather: "Partly Cloudy",
@@ -176,7 +162,6 @@ async function fetchLocationFromAPI() {
 }
 
 async function fetchActivitiesFromAPI() {
-  // Mock data for nearby activities
   return {
     activities: [
       {
@@ -203,7 +188,6 @@ async function fetchActivitiesFromAPI() {
         distance: "2.3 KM",
         geocode: [1.3551, 103.8201],
       },
-      // Add more activities as needed
     ],
   };
 }

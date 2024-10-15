@@ -1,32 +1,55 @@
 import logo from "../../art/sunnysidelogo.PNG";
 import React, { useState, useEffect } from "react";
+import axios from "axios"; // Import axios for API calls
 import "../../styling/SettingsPanel.css";
 
 function SettingsPanel({
   isOpen,
   toggleSettingsPanel,
   toggleEditProfilePanel,
-  preferences,
+  userEmail,  // Assuming user's email is passed as a prop
 }) {
-  // State to hold activities
+  // State to hold user information
+  const [userData, setUserData] = useState({
+    firstname: "",
+    lastname: "",
+    preferences: [],
+  });
+
   const [activities, setActivities] = useState([]);
 
-  // Mock function to simulate fetching activities from a database
-  const fetchActivities = () => {
-    const mockActivities = [
-      { activity: "Running", date: "2023-10-01", time: "07:00 AM" },
-      { activity: "Swimming", date: "2023-10-02", time: "08:00 AM" },
-      { activity: "Hiking", date: "2023-10-03", time: "09:00 AM" },
-      { activity: "Swimming", date: "2023-10-02", time: "08:00 AM" },
-      { activity: "Hiking", date: "2023-10-03", time: "09:00 AM" },
-    ];
-    setActivities(mockActivities);
+  // Function to fetch user data from the database
+  const fetchUserData = async () => {
+    try {
+      console.log(userData);
+      const response = await axios.get(`/api/users/${userEmail}`);
+      setUserData({
+        firstname: response.data.firstname,
+        lastname: response.data.lastname,
+        preferences: response.data.activities || [], // Fetched activity preferences
+      });
+      console.log("User data fetched:", response.data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
   };
 
-  // Fetch activities when the component mounts
+  // Function to fetch recent activities from the database
+  const fetchActivities = async () => {
+    try {
+      const response = await axios.get(`/api/activities/${userEmail}`);
+      setActivities(response.data);
+      console.log("Activities fetched:", response.data);
+    } catch (error) {
+      console.error("Error fetching activities:", error);
+    }
+  };
+
+  // Fetch user data and activities when the component mounts
   useEffect(() => {
+    fetchUserData();
     fetchActivities();
-  }, []);
+  }, [userEmail]);
 
   return (
     <div>
@@ -56,11 +79,14 @@ function SettingsPanel({
             <span className="material-icons ProfileIcon">person</span>
           </div>
 
-          <h4 className="UserName">John Doe</h4>
-          <label className="UserEmail">lorem_ipsum@gmail.com</label>
+          {/* Display user's full name */}
+          <h4 className="UserName">{`${userData.firstname} ${userData.lastname}`}</h4>
+          {/* Display user's email */}
+          <label className="UserEmail">{userEmail}</label>
 
+          {/* Display user's activity preferences */}
           <div className="UserPreferences">
-            {preferences.map((preference, index) => (
+            {userData.preferences.map((preference, index) => (
               <div key={index} className="PreferenceTag">
                 {preference}
               </div>

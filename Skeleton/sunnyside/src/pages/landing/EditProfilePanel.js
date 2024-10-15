@@ -1,14 +1,15 @@
 import logo from "../../art/sunnysidelogo.PNG";
 import React, { useState, useEffect } from "react";
 import "../../styling/EditProfilePanel.css";
+import axios from "axios"; // Import axios for making API requests
 
 function EditProfilePanel({
   isOpen,
   toggleEditProfilePanel,
   preferences,
   setPreferences,
+  userEmail, // new prop passed from Landing.js
 }) {
-  // Example preferences, replace with actual data as needed
   const allActivities = [
     "Running",
     "Swimming",
@@ -20,48 +21,47 @@ function EditProfilePanel({
     "Soccer",
     "Basketball",
   ];
-  // State to hold selected activities
+
   const [selectedActivities, setSelectedActivities] = useState(preferences);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
-  // State to hold first name and last name
-  const [firstName, setFirstName] = useState("John");
-  const [lastName, setLastName] = useState("Doe");
-
-  // Mock function to simulate updating the name in a database
-  const updateNameInDatabase = (firstName, lastName) => {
-    console.log(`Updating name in database: ${firstName} ${lastName}`);
+  // Fetch user's data from the database
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(`/api/users/${userEmail}`); // Use userEmail prop
+      const user = response.data;
+      setFirstName(user.firstname);
+      setLastName(user.lastname);
+      setSelectedActivities(user.preferences || []);
+      console.log("User data fetched successfully!");
+    } catch (err) {
+      console.error("Error fetching user data:", err);
+    }
   };
 
-  // Mock function to simulate fetching user's name from database
-  const fetchName = () => {
-    const mockFirstName = "John";
-    const mockLastName = "Doe";
-    setFirstName(mockFirstName);
-    setLastName(mockLastName);
-    console.log("Name fetched successfully!");
+  // Update the user's name and preferences in the database
+  const updateUserData = async (updatedData) => {
+    try {
+      const response = await axios.patch(`/api/users/${userEmail}`, updatedData); // Use userEmail prop
+      console.log("User data updated successfully!", response.data);
+    } catch (err) {
+      console.error("Error updating user data:", err);
+    }
   };
 
-  // Mock function to simulate fetching selected activities from a database
-  const fetchSelectedActivities = () => {
-    // Simulate a delay
-    const mockSelectedActivities = ["Running", "Swimming", "Hiking"];
-    setSelectedActivities(mockSelectedActivities);
-    console.log("Selected activities fetched successfully!");
-  };
-
-  // Handle form submission for first name and last name form
+  // Handle form submission for updating the user's name
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateNameInDatabase(firstName, lastName);
+    updateUserData({ firstname: firstName, lastname: lastName });
   };
 
-  // Fetch selected activities when the component mounts
+  // Fetch user data when the component mounts
   useEffect(() => {
-    fetchName();
-    fetchSelectedActivities();
-  }, []);
+    fetchUserData();
+  }, [userEmail]); // Refetch data if userEmail changes
 
-  // Handle activity selection (User is limited to selected 3 activities)
+  // Handle activity selection (User is limited to selecting 3 activities)
   const handleActivityClick = (activity) => {
     let newSelectedActivities;
     if (selectedActivities.includes(activity)) {
@@ -73,10 +73,10 @@ function EditProfilePanel({
       return;
     }
     setSelectedActivities(newSelectedActivities);
-    setPreferences(newSelectedActivities); // Update preferences in parent component
+    setPreferences(newSelectedActivities);
+    updateUserData({ preferences: newSelectedActivities });
   };
 
-  // Group activities into rows of 3
   const groupedActivities = [];
   for (let i = 0; i < allActivities.length; i += 3) {
     groupedActivities.push(allActivities.slice(i, i + 3));
@@ -159,7 +159,7 @@ function EditProfilePanel({
             className="ChangePasswordButton"
             onClick={() => alert("Change Password here")}
           >
-            <span className="material-icons ">password</span>
+            <span className="material-icons">password</span>
             Change Password
           </button>
         </div>
