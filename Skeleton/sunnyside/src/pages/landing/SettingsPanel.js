@@ -1,4 +1,5 @@
 import logo from "../../art/sunnysidelogo.PNG";
+import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from "react";
 import "../../styling/SettingsPanel.css";
 
@@ -9,6 +10,7 @@ function SettingsPanel({
   preferences,
 }) {
   // State to hold activities
+  const navigate = useNavigate();
   const [activities, setActivities] = useState([]);
 
   // Mock function to simulate fetching activities from a database
@@ -90,10 +92,13 @@ function SettingsPanel({
             </tbody>
           </table>
 
-          <button className="LogoutButton" onClick={() => alert("Logged out")}>
+          <button className="LogoutButton" onClick={() => {
+            alert("Logged out");
+            navigate("/login");
+            }}
+            >
             <span className="material-icons">logout</span>
             Log out
-            
           </button>
         </div>
       </div>
