@@ -4,7 +4,6 @@ const User = require('../models/user')
 
 // Get a specific user based on email
 router.get('/:email', async(req, res) => {
-    console.log("I am in get");
     try{
         const user = await User.find({"email": req.params.email});
         if(!user){
@@ -20,7 +19,6 @@ router.get('/:email', async(req, res) => {
 
 // Add a new user to the DB
 router.post('/', async(req, res) => {
-    console.log("I am in post");
     const user = new User({
         firstname: req.body.firstname,
         lastname: req.body.lastname,

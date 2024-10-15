@@ -21,18 +21,22 @@ function Login() {
       const data = {"email":email};
       console.log(`Finding user`);
       const user_json = await axios.get('/api/users/'.concat(email));
-      console.log(`Found user`);
+      const user = user_json.data[0];
+      console.log(`Found user: `, user.email);
 
       // const user = JSON.parse(user_json);
-      const correct_pw = user_json.password;
+      const correct_pw = user.password;
 
       console.log(`Checking password`);
-      if(password !== correct_pw){
-        setErrorMessage("Wrong Password");
-      }
-      else{
+      // console.log('Correct Password: ', correct_pw); remove this for security purposes
+      if(password == correct_pw){
         navigate("/landing");
       }
+      else{
+        setErrorMessage("Wrong Password");
+      }
+
+      // navigate("/landing");
 
     } catch (error) {
       // Handle login failure
