@@ -1,5 +1,6 @@
 import logo from "../../art/sunnysidelogo.PNG";
 import React, { useState, useEffect } from "react";
+import ChangePW from "./ChangePW";
 import "../../styling/EditProfilePanel.css";
 import axios from "axios"; // Import axios for making API requests
 
@@ -157,13 +158,18 @@ function EditProfilePanel({
 
           <button
             className="ChangePasswordButton"
-            onClick={() => alert("Change Password here")}
+            // onClick={() => alert("Change Password here")}
+            onClick={() => setIsResetPWPanelOpen(true)}
           >
             <span className="material-icons">password</span>
             Change Password
           </button>
         </div>
       </div>
+      <ChangePW
+        isOpen={isResetPWPanelOpen}
+        onClose={() => setIsResetPWPanelOpen(false)}
+      />
     </div>
   );
 }

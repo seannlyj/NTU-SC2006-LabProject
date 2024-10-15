@@ -119,6 +119,7 @@ function SettingsPanel({
           <button className="LogoutButton" onClick={() => alert("Logged out")}>
             <span className="material-icons">logout</span>
             Log out
+            
           </button>
         </div>
       </div>
