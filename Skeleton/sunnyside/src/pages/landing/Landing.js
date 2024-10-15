@@ -42,30 +42,46 @@ const Landing = () => {
   const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState(null); //For activity panel (To display selected activity when user clicks on one of the activities in TemperatureDisplayPanel)
 
+  // GPS location states
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [geoError, setGeoError] = useState(null); // To store geolocation errors
 
-  // Insert GPS location here
-  // Latitude and longitude (you can set them based on user location or a default location)
-  const [latitude, setLatitude] = useState(1.3521);
-  const [longitude, setLongitude] = useState(103.8198);
-
-
-  //use a useEffect to fetch info from individual APIs
+  // useEffect to get user's geolocation
   useEffect(() => {
-    //These functions will call a function to fetch data from APIs
-    //Currently, the fetchers for API data are mock functions
-    fetchWeatherData(latitude,longitude);
-    fetchLocationData(latitude,longitude);
-    fetchNearbyActivities(latitude,longitude);
-  }, [latitude,longitude]);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLatitude(position.coords.latitude);
+          setLongitude(position.coords.longitude);
+          setGeoError(null); // Reset error if geolocation is successful
+        },
+        (error) => {
+          console.error("Error getting geolocation:", error);
+          setGeoError("Unable to retrieve location. Please enable location services.");
+        }
+      );
+    } else {
+      setGeoError("Geolocation is not supported by your browser.");
+    }
+  }, []);
 
-  const fetchWeatherData = async (lat,lon) => {
-    //Mock function api call (to replace later on)
-    const weatherData = await fetchWeatherFromAPI(lat,lon);
+  // useEffect to fetch data after getting latitude and longitude
+  useEffect(() => {
+    if (latitude !== null && longitude !== null) {
+      // Fetch weather, location, and nearby activities when location is available
+      fetchWeatherData(latitude, longitude);
+      fetchLocationData(latitude, longitude);
+      fetchNearbyActivities(latitude, longitude);
+    }
+  }, [latitude, longitude]);
+
+  const fetchWeatherData = async (lat, lon) => {
+    const weatherData = await fetchWeatherFromAPI(lat, lon);
     setWeather(weatherData.weather);
     setTemperature(`${weatherData.temperature}`);
     setWeatherCutoffTime(weatherData.cutOffTiming);
 
-    //Setting weather name based on weather provided by NEA API
     switch (weatherData.weather) {
       case "Fair (Day)":
       case "Fair":
@@ -116,15 +132,13 @@ const Landing = () => {
     }
   };
 
-  const fetchLocationData = async (lat,lon) => {
-    //Mock function api call (to replace later on)
-    const locationData = await fetchLocationFromAPI(lat,lon);
+  const fetchLocationData = async (lat, lon) => {
+    const locationData = await fetchLocationFromAPI(lat, lon);
     setLocation(locationData.location);
   };
 
-  const fetchNearbyActivities = async (lat,lon) => {
-    //Mock function api call (to replace later on)
-    const activitiesData = await fetchActivitiesFromAPI(lat,lon);
+  const fetchNearbyActivities = async (lat, lon) => {
+    const activitiesData = await fetchActivitiesFromAPI(lat, lon);
     setActivities(activitiesData.activities);
   };
 
@@ -151,6 +165,7 @@ const Landing = () => {
           activities={activities}
           onActivityClick={handleActivityClick} // Pass the handler
         />
+        {geoError && <p className="geo-error">{geoError}</p>} {/* Display geolocation error */}
         <SettingsPanel
           isOpen={isSettingsOpen}
           toggleSettingsPanel={toggleSettingsPanel}
@@ -254,8 +269,17 @@ async function fetchWeatherFromAPI(lat,lon) {
     console.log(temperatureForClosest);
     console.log(forecastForClosest);
     // Extract and format cut-off timing
-    const startTime = new Date(validPeriod.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const endTime = new Date(validPeriod.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    // Convert the valid period's start and end times to the local time zone (Singapore, UTC+8)
+    const startDate = new Date(validPeriod.start);
+    const endDate = new Date(validPeriod.end);
+
+    // Adjust by adding 8 hours to account for UTC+12 (Singapore time zone)
+    startDate.setHours(startDate.getHours() + 12);
+    endDate.setHours(endDate.getHours() + 12);
+
+    // Format the times in 24-hour format
+    const startTime = startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    const endTime = endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });   
 
     return {
       weather: forecastForClosest,
