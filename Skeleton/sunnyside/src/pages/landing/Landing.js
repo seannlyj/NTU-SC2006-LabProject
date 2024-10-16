@@ -275,8 +275,8 @@ async function fetchWeatherFromAPI(lat,lon) {
     const endDate = new Date(validPeriod.end);
 
     // Adjust by adding 8 hours to account for UTC+12 (Singapore time zone)
-    startDate.setHours(startDate.getHours() + 12);
-    endDate.setHours(endDate.getHours() + 12);
+    startDate.setHours(startDate.getHours());
+    endDate.setHours(endDate.getHours());
 
     // Format the times in 24-hour format
     const startTime = startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
