@@ -16,19 +16,22 @@ const UserSchema = new mongoose.Schema({
     },
     password:{
         type: String,
-        required: true
+        required: true,
     },
     preference1: {
         type: String,
-        required: false
+        required: false,
+        default: 'Running'
     },
     preference2: {
         type: String,
-        required: false
+        required: false,
+        default: 'Swimming'
     },
     preference3: {
         type: String,
-        required: false
+        required: false,
+        default: 'Hiking'
     },
     activitylog:[{
         activityName:{
