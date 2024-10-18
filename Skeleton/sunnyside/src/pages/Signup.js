@@ -1,19 +1,39 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import logo from '../art/sunnysidelogo.PNG';
-import '../styling/Signup.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import logo from "../art/sunnysidelogo.PNG";
+import "../styling/Signup.css";
 
 const SignUp = () => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [fadeOut, setFadeOut] = useState(false);
 
   const navigate = useNavigate();
+
+  // Fade out animation when user leaves the page
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      setFadeOut(true);
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  const handleLogInClick = (e) => {
+    e.preventDefault();
+    setFadeOut(true);
+    setTimeout(() => navigate("/login"), 500); // Wait for the animation to complete
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
@@ -31,19 +51,24 @@ const SignUp = () => {
 
     try {
       // Send signup request to the backend
-      const data = {"firstname":firstName, "lastname": lastName, "email":email, "password":password};
-      const response = await axios.post('/api/users/', data);
+      const data = {
+        firstname: firstName,
+        lastname: lastName,
+        email: email,
+        password: password,
+      };
+      const response = await axios.post("/api/users/", data);
 
       // If signup is successful, set success message
-      setErrorMessage(''); // Clear error message if signup is successful
+      setErrorMessage(""); // Clear error message if signup is successful
 
       navigate("/login");
-
     } catch (error) {
       // Handle signup failure
-      const message = error.response?.data?.message || 'Signup failed. Please try again.';
+      const message =
+        error.response?.data?.message || "Signup failed. Please try again.";
       setErrorMessage(message); // Set the error message state
-      setSuccessMessage(''); // Clear success message if there's an error
+      setSuccessMessage(""); // Clear success message if there's an error
     }
   };
 
@@ -55,12 +80,15 @@ const SignUp = () => {
         <h2>brighten your day,</h2>
         <h2>no matter the weather</h2>
       </div>
-      <div className="SignupForm">
+      <div className={`SignupForm ${fadeOut ? "fade-out" : ""}`}>
         <h1>Create Account</h1>
-        {errorMessage && <div className="error">{errorMessage}</div>} {/* Display error message if exists */}
-        {successMessage && <div className="success">{successMessage}</div>} {/* Display success message if exists */}
-        
-        <form onSubmit={handleSubmit}> {/* Call handleSubmit on form submission */}
+        {errorMessage && <div className="error">{errorMessage}</div>}{" "}
+        {/* Display error message if exists */}
+        {successMessage && <div className="success">{successMessage}</div>}{" "}
+        {/* Display success message if exists */}
+        <form onSubmit={handleSubmit}>
+          {" "}
+          {/* Call handleSubmit on form submission */}
           <div className="name-container">
             <div className="firstname-container">
               <label htmlFor="firstName">First Name</label>
@@ -85,7 +113,6 @@ const SignUp = () => {
               />
             </div>
           </div>
-
           <div>
             <label htmlFor="email">E-mail</label>
             <input
@@ -97,7 +124,6 @@ const SignUp = () => {
               required
             />
           </div>
-
           <div className="whole-password-container">
             <div className="password-container">
               <label htmlFor="password">Password</label>
@@ -122,17 +148,17 @@ const SignUp = () => {
               />
             </div>
           </div>
-          
           <div>
             <p>You are agreeing to the Terms of Service and Privacy Policy.</p>
           </div>
-
           <div>
             <button type="submit">Sign up</button>
           </div>
           <div className="login-container">
             <span className="login-subtext">Already have an account? </span>
-            <a href="/login" className="log-in">Log in</a>
+            <a href="/login" className="log-in" onClick={handleLogInClick}>
+              Log in
+            </a>
           </div>
         </form>
       </div>

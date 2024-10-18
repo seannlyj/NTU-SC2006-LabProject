@@ -14,7 +14,7 @@ const MapComponent = ({ selectedActivity, markerData }) => {
       description:
         "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
       image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
-      activity: "martialarts", // Specify activity type
+      activity: "Martial Arts", // Specify activity type
       indoorOutdoor: "outdoor", // Specify whether it's indoors or outdoors
     },
     {
@@ -23,7 +23,7 @@ const MapComponent = ({ selectedActivity, markerData }) => {
       description:
         "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
       image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
-      activity: "yoga", // Specify activity type
+      activity: "Yoga", // Specify activity type
       indoorOutdoor: "indoor", // Specify whether it's indoors or outdoors
     },
     {
@@ -32,7 +32,7 @@ const MapComponent = ({ selectedActivity, markerData }) => {
       description:
         "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
       image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
-      activity: "martialarts", // Specify activity type
+      activity: "Martial Arts", // Specify activity type
       indoorOutdoor: "indoor", // Specify whether it's indoors or outdoors
     },
     {
@@ -41,12 +41,19 @@ const MapComponent = ({ selectedActivity, markerData }) => {
       description:
         "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
       image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
-      activity: "swimming", // Specify activity type
+      activity: "Swimming", // Specify activity type
       indoorOutdoor: "outdoor", // Specify whether it's indoors or outdoors
     },
   ];
 
   const [markers, setMarkers] = useState(markerData || defaultMarkers);
+
+  useEffect(() => {
+    if (markerData) {
+      setMarkers(markerData);
+    }
+  }, [markerData]);
+
   const iconWidth = 100;
   const iconHeight = 100;
   // Creating icons for indoor and outdoor activities
@@ -79,97 +86,102 @@ const MapComponent = ({ selectedActivity, markerData }) => {
     iconUrl: require("../../art/location-icons/activity_cycling_indoor.png"),
     iconSize: [iconWidth, iconHeight], // Size of the icon
   });
-  
+
   const cyclingOutIcon = new Icon({
     iconUrl: require("../../art/location-icons/activity_cycling_outdoor.png"),
     iconSize: [iconWidth, iconHeight], // Size of the icon
   });
-  
+
   const hikingInIcon = new Icon({
     iconUrl: require("../../art/location-icons/activity_hiking_indoor.png"),
     iconSize: [iconWidth, iconHeight], // Size of the icon
   });
-  
+
   const hikingOutIcon = new Icon({
     iconUrl: require("../../art/location-icons/activity_hiking_outdoor.png"),
     iconSize: [iconWidth, iconHeight], // Size of the icon
   });
-  
+
   const martialArtsInIcon = new Icon({
     iconUrl: require("../../art/location-icons/activity_martialarts_indoor.png"),
     iconSize: [iconWidth, iconHeight], // Size of the icon
   });
-  
+
   const martialArtsOutIcon = new Icon({
     iconUrl: require("../../art/location-icons/activity_martialarts_outdoor.png"),
     iconSize: [iconWidth, iconHeight], // Size of the icon
   });
-  
+
   const runningInIcon = new Icon({
     iconUrl: require("../../art/location-icons/activity_running_indoor.png"),
     iconSize: [iconWidth, iconHeight], // Size of the icon
   });
-  
+
   const runningOutIcon = new Icon({
     iconUrl: require("../../art/location-icons/activity_running_outdoor.png"),
     iconSize: [iconWidth, iconHeight], // Size of the icon
   });
-  
+
   const soccerInIcon = new Icon({
     iconUrl: require("../../art/location-icons/activity_soccer_indoor.png"),
     iconSize: [iconWidth, iconHeight], // Size of the icon
   });
-  
+
   const soccerOutIcon = new Icon({
     iconUrl: require("../../art/location-icons/activity_soccer_outdoor.png"),
     iconSize: [iconWidth, iconHeight], // Size of the icon
   });
-  
+
   const swimmingInIcon = new Icon({
     iconUrl: require("../../art/location-icons/activity_swimming_indoor.png"),
     iconSize: [iconWidth, iconHeight], // Size of the icon
   });
-  
+
   const swimmingOutIcon = new Icon({
     iconUrl: require("../../art/location-icons/activity_swimming_outdoor.png"),
     iconSize: [iconWidth, iconHeight], // Size of the icon
   });
-  
+
   const yogaInIcon = new Icon({
     iconUrl: require("../../art/location-icons/activity_yoga_indoor.png"),
     iconSize: [iconWidth, iconHeight], // Size of the icon
   });
-  
+
   const yogaOutIcon = new Icon({
     iconUrl: require("../../art/location-icons/activity_yoga_outdoor.png"),
     iconSize: [iconWidth, iconHeight], // Size of the icon
   });
-  
+
   const getActivityIcon = (activity, indoorOutdoor) => {
     switch (activity) {
-      case "basketball":
-        return indoorOutdoor === "indoor" ? basketBallInIcon : basketBallOutIcon;
-      case "bouldering":
-        return indoorOutdoor === "indoor" ? boulderingInIcon : boulderingOutIcon;
-      case "cycling":
+      case "Basketball":
+        return indoorOutdoor === "indoor"
+          ? basketBallInIcon
+          : basketBallOutIcon;
+      case "Bouldering":
+        return indoorOutdoor === "indoor"
+          ? boulderingInIcon
+          : boulderingOutIcon;
+      case "Cycling":
         return indoorOutdoor === "indoor" ? cyclingInIcon : cyclingOutIcon;
-      case "hiking":
+      case "Hiking":
         return indoorOutdoor === "indoor" ? hikingInIcon : hikingOutIcon;
-      case "martialarts":
-        return indoorOutdoor === "indoor" ? martialArtsInIcon : martialArtsOutIcon;
-      case "running":
+      case "Martial Arts":
+        return indoorOutdoor === "indoor"
+          ? martialArtsInIcon
+          : martialArtsOutIcon;
+      case "Running":
         return indoorOutdoor === "indoor" ? runningInIcon : runningOutIcon;
-      case "soccer":
+      case "Soccer":
         return indoorOutdoor === "indoor" ? soccerInIcon : soccerOutIcon;
-      case "swimming":
+      case "Swimming":
         return indoorOutdoor === "indoor" ? swimmingInIcon : swimmingOutIcon;
-      case "yoga":
+      case "Yoga":
         return indoorOutdoor === "indoor" ? yogaInIcon : yogaOutIcon;
       default:
         return customIcon; // Default icon if activity doesn't match
     }
   };
-
 
   const createCustomClusterIcon = (cluster) => {
     return new divIcon({
@@ -223,7 +235,7 @@ const MapComponent = ({ selectedActivity, markerData }) => {
       zoomControl={false}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-  
+
       <MarkerClusterGroup
         chunkedLoading
         iconCreateFunction={createCustomClusterIcon}

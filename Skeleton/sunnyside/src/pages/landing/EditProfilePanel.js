@@ -3,24 +3,24 @@ import React, { useState, useEffect } from "react";
 import ChangePW from "./ChangePW";
 import "../../styling/EditProfilePanel.css";
 
+export const allActivities = [
+  "Running",
+  "Swimming",
+  "Hiking",
+  "Cycling",
+  "Yoga",
+  "Bouldering",
+  "Martial Arts",
+  "Soccer",
+  "Basketball",
+];
+
 function EditProfilePanel({
   isOpen,
   toggleEditProfilePanel,
   preferences,
   setPreferences,
 }) {
-  // Example preferences, replace with actual data as needed
-  const allActivities = [
-    "Running",
-    "Swimming",
-    "Hiking",
-    "Cycling",
-    "Yoga",
-    "Bouldering",
-    "Martial Arts",
-    "Soccer",
-    "Basketball",
-  ];
   // State to hold selected activities
   const [selectedActivities, setSelectedActivities] = useState(preferences);
 
@@ -75,6 +75,7 @@ function EditProfilePanel({
       alert("You can only select up to 3 activities.");
       return;
     }
+
     setSelectedActivities(newSelectedActivities);
     setPreferences(newSelectedActivities); // Update preferences in parent component
   };
