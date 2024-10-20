@@ -115,9 +115,6 @@ function Login() {
             <a href="/signup" className="sign-up" onClick={handleSignUpClick}>
               Sign up{" "}
             </a>
-            <a href="/landing" className="sign-up">
-              | Landing
-            </a>
           </div>
         </form>
       </div>
