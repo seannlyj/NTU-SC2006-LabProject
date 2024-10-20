@@ -4,6 +4,18 @@ import ChangePW from "./ChangePW";
 import "../../styling/EditProfilePanel.css";
 import axios from "axios"; // Import axios for making API requests
 
+export const allActivities = [
+  "Running",
+  "Swimming",
+  "Hiking",
+  "Cycling",
+  "Yoga",
+  "Bouldering",
+  "Martial Arts",
+  "Soccer",
+  "Basketball",
+];
+
 function EditProfilePanel({
   isOpen,
   toggleEditProfilePanel,
@@ -11,18 +23,7 @@ function EditProfilePanel({
   setPreferences,
   updateUser, // new prop passed from Landing.js to update user globally
 }) {
-  const allActivities = [
-    "Running",
-    "Swimming",
-    "Hiking",
-    "Cycling",
-    "Yoga",
-    "Bouldering",
-    "Martial Arts",
-    "Soccer",
-    "Basketball",
-  ];
-
+  // State to hold selected activities
   const [selectedActivities, setSelectedActivities] = useState(preferences);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -47,7 +48,10 @@ function EditProfilePanel({
   // Update the user's name and preferences in the database
   const updateUserData = async (updatedData) => {
     try {
-      const response = await axios.patch(`/api/users/${staticEmail}`, updatedData); // Use static email
+      const response = await axios.patch(
+        `/api/users/${staticEmail}`,
+        updatedData
+      ); // Use static email
       console.log("User data updated successfully!", response.data);
 
       // Call the updateUser method to reflect changes in the parent component (Landing.js)
@@ -80,6 +84,7 @@ function EditProfilePanel({
       alert("You can only select up to 3 activities.");
       return;
     }
+
     setSelectedActivities(newSelectedActivities);
     setPreferences(newSelectedActivities);
     updateUserData({ preferences: newSelectedActivities });
@@ -182,4 +187,3 @@ function EditProfilePanel({
 }
 
 export default EditProfilePanel;
-
