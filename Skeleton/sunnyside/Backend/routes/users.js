@@ -64,9 +64,11 @@ router.patch('/:email', async(req, res) => {
         if(req.body.email){
             user.email = req.body.email;
         }
-        // if(req.body.password){
-        //     user.password = req.body.password;
-        // }
+        
+        //update user's password
+        if(req.body.password){
+             user.password = req.body.password;
+         }
 
         // if the request body has preferences, update the user's preferences
         if(req.body.preferences){

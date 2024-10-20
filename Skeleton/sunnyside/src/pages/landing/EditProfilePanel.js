@@ -8,6 +8,7 @@ function EditProfilePanel({
   toggleEditProfilePanel,
   preferences,
   setPreferences,
+  //userEmail,
 }) {
   // Example preferences, replace with actual data as needed
   const allActivities = [
@@ -171,6 +172,7 @@ function EditProfilePanel({
       <ChangePW
         isOpen={isResetPWPanelOpen}
         onClose={() => setIsResetPWPanelOpen(false)}
+        userEmail={userEmail}
       />
     </div>
   );

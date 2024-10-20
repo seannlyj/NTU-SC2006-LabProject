@@ -30,7 +30,10 @@ function Login() {
       console.log(`Checking password`);
       // console.log('Correct Password: ', correct_pw); remove this for security purposes
       if(password == correct_pw){
-        navigate("/landing");
+      // Pass email to the landing page via state
+      //navigate("/landing", { state: { email: user.email } });  // <-- Passing email to landing page
+
+      navigate("/landing");
       }
       else{
         setErrorMessage("Wrong Password");

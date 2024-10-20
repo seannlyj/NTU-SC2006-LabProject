@@ -6,8 +6,14 @@ import EditProfilePanel from "./EditProfilePanel.js";
 import MapComponent from "./MapComponent"; // Import the MapComponent
 import HintPanel from "./HintPanel.js";
 import React, { useState, useEffect } from "react";
+//import { useLocation } from 'react-router-dom'; // Import useLocation to get passed email
 
-const Landing = () => {
+/*const Landing = () => {
+  // Extract email from useLocation
+  const locationState = useLocation(); 
+  const { email } = locationState.state; // <-- Only this part is added to extract email
+  */
+
   //Settings Panel
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -178,6 +184,7 @@ const Landing = () => {
           toggleEditProfilePanel={toggleEditProfilePanel}
           preferences={preferences}
           setPreferences={setPreferences}
+          //userEmail={email}  // <-- Pass email to EditProfilePanel
         />
       </div>
     </div>
