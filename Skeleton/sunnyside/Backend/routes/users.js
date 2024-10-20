@@ -5,9 +5,9 @@ const User = require('../models/user')
 // Get a specific user based on email
 router.get('/:email', async(req, res) => {
     try{
-        const user = await User.findOne({email: req.params.email});
+        const user = await User.find({"email": req.params.email});
         if(!user){
-            return res.status(404).json({message: 'User not found'});
+            // return res.status(404).json({message: 'User not found'});
         }
         res.json(user);
         // user is a JSON object, so can just return it without any conversion
@@ -64,9 +64,11 @@ router.patch('/:email', async(req, res) => {
         if(req.body.email){
             user.email = req.body.email;
         }
-        // if(req.body.password){
-        //     user.password = req.body.password;
-        // }
+        
+        //update user's password
+        if(req.body.password){
+             user.password = req.body.password;
+         }
 
         // if the request body has preferences, update the user's preferences
         if(req.body.preferences){

@@ -1,32 +1,66 @@
 import logo from "../../art/sunnysidelogo.PNG";
+import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "../../styling/SettingsPanel.css";
 
 function SettingsPanel({
   isOpen,
-  toggleSettingsPanel,
+  toggleSettingsPanel, // Function to close the SettingsPanel
   toggleEditProfilePanel,
   preferences,
+  setPreferences, // New prop to allow preference updates
+  email,
 }) {
+  // State to hold user's name and email
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  //const email = "mysterystudent007@gmail.com"; // Hardcoded email
+
   // State to hold activities
+  const navigate = useNavigate();
   const [activities, setActivities] = useState([]);
 
-  // Mock function to simulate fetching activities from a database
-  const fetchActivities = () => {
-    const mockActivities = [
-      { activity: "Running", date: "2023-10-01", time: "07:00 AM" },
-      { activity: "Swimming", date: "2023-10-02", time: "08:00 AM" },
-      { activity: "Hiking", date: "2023-10-03", time: "09:00 AM" },
-      { activity: "Swimming", date: "2023-10-02", time: "08:00 AM" },
-      { activity: "Hiking", date: "2023-10-03", time: "09:00 AM" },
-    ];
-    setActivities(mockActivities);
+  // State to hold user's preferences
+  const [userPreferences, setUserPreferences] = useState([]);
+
+  // Function to fetch user's details from the database
+  const fetchUserDetails = async () => {
+    try {
+      const response = await axios.get(`/api/users/${email}`);
+      const user = response.data[0]; // Access the first user in the array
+      setFirstName(user.firstname);
+      setLastName(user.lastname);
+
+      // Update user preferences
+      setUserPreferences(
+        [user.preference1, user.preference2, user.preference3].filter(
+          (preference) => preference
+        )
+      ); // Filter out any undefined preferences
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    }
   };
 
-  // Fetch activities when the component mounts
+  // Function to fetch activities from the database
+  const fetchActivities = () => {
+    // You can also fetch activities here if needed
+  };
+
+  // Fetch user details when the component mounts or when `isOpen` changes
   useEffect(() => {
-    fetchActivities();
-  }, []);
+    if (isOpen) {
+      fetchUserDetails();
+      fetchActivities(); // This could be left as is if you plan to fetch activities later
+    }
+  }, [isOpen]); // Refetch data when the panel opens
+
+  // Modified function to open EditProfilePanel and close SettingsPanel
+  const handleEditProfile = () => {
+    toggleEditProfilePanel(); // Open EditProfilePanel
+    toggleSettingsPanel(); // Close SettingsPanel
+  };
 
   return (
     <div>
@@ -39,7 +73,7 @@ function SettingsPanel({
             <div className="ButtonContainer">
               <span
                 className="material-icons EditOutlined"
-                onClick={toggleEditProfilePanel}
+                onClick={handleEditProfile} // Use modified handler
               >
                 edit
               </span>
@@ -56,11 +90,13 @@ function SettingsPanel({
             <span className="material-icons ProfileIcon">person</span>
           </div>
 
-          <h4 className="UserName">John Doe</h4>
-          <label className="UserEmail">lorem_ipsum@gmail.com</label>
+          <h4 className="UserName">
+            {firstName} {lastName}
+          </h4>
+          <label className="UserEmail">{email}</label>
 
           <div className="UserPreferences">
-            {preferences.map((preference, index) => (
+            {userPreferences.map((preference, index) => (
               <div key={index} className="PreferenceTag">
                 {preference}
               </div>
@@ -90,7 +126,13 @@ function SettingsPanel({
             </tbody>
           </table>
 
-          <button className="LogoutButton" onClick={() => alert("Logged out")}>
+          <button
+            className="LogoutButton"
+            onClick={() => {
+              alert("Logged out");
+              navigate("/login");
+            }}
+          >
             <span className="material-icons">logout</span>
             Log out
           </button>

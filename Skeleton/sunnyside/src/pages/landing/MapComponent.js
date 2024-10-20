@@ -1,19 +1,21 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import L, { Icon, divIcon } from "leaflet";
+import L, { Icon, divIcon, icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../../styling/MapComponent.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
 
-const MapComponent = ({ selectedActivity }) => {
+const MapComponent = ({ selectedActivity, markerData }) => {
   // Pinned locations should be passed as an array
-  const markers = [
+  const defaultMarkers = [
     {
       geocode: [1.3521, 103.8198],
       popUp: "Gym",
       description:
         "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
       image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
+      activity: "Martial Arts", // Specify activity type
+      indoorOutdoor: "outdoor", // Specify whether it's indoors or outdoors
     },
     {
       geocode: [1.3531, 103.8199],
@@ -21,6 +23,8 @@ const MapComponent = ({ selectedActivity }) => {
       description:
         "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
       image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
+      activity: "Yoga", // Specify activity type
+      indoorOutdoor: "indoor", // Specify whether it's indoors or outdoors
     },
     {
       geocode: [1.3541, 103.82],
@@ -28,6 +32,8 @@ const MapComponent = ({ selectedActivity }) => {
       description:
         "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
       image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
+      activity: "Martial Arts", // Specify activity type
+      indoorOutdoor: "indoor", // Specify whether it's indoors or outdoors
     },
     {
       geocode: [1.3551, 103.8201],
@@ -35,13 +41,147 @@ const MapComponent = ({ selectedActivity }) => {
       description:
         "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
       image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
+      activity: "Swimming", // Specify activity type
+      indoorOutdoor: "outdoor", // Specify whether it's indoors or outdoors
     },
   ];
 
+  const [markers, setMarkers] = useState(markerData || defaultMarkers);
+
+  useEffect(() => {
+    if (markerData) {
+      setMarkers(markerData);
+    }
+  }, [markerData]);
+
+  const iconWidth = 100;
+  const iconHeight = 100;
+  // Creating icons for indoor and outdoor activities
   const customIcon = new Icon({
     iconUrl: require("../../art/location-icons/location.png"),
-    iconSize: [38, 38], // Size of the icon
+    iconSize: [iconWidth, iconHeight], // Size of the icon
   });
+
+  const basketBallInIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_basketball_indoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const basketBallOutIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_basketball_outdoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const boulderingInIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_bouldering_indoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const boulderingOutIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_bouldering_outdoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const cyclingInIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_cycling_indoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const cyclingOutIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_cycling_outdoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const hikingInIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_hiking_indoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const hikingOutIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_hiking_outdoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const martialArtsInIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_martialarts_indoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const martialArtsOutIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_martialarts_outdoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const runningInIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_running_indoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const runningOutIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_running_outdoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const soccerInIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_soccer_indoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const soccerOutIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_soccer_outdoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const swimmingInIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_swimming_indoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const swimmingOutIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_swimming_outdoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const yogaInIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_yoga_indoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const yogaOutIcon = new Icon({
+    iconUrl: require("../../art/location-icons/activity_yoga_outdoor.png"),
+    iconSize: [iconWidth, iconHeight], // Size of the icon
+  });
+
+  const getActivityIcon = (activity, indoorOutdoor) => {
+    switch (activity) {
+      case "Basketball":
+        return indoorOutdoor === "indoor"
+          ? basketBallInIcon
+          : basketBallOutIcon;
+      case "Bouldering":
+        return indoorOutdoor === "indoor"
+          ? boulderingInIcon
+          : boulderingOutIcon;
+      case "Cycling":
+        return indoorOutdoor === "indoor" ? cyclingInIcon : cyclingOutIcon;
+      case "Hiking":
+        return indoorOutdoor === "indoor" ? hikingInIcon : hikingOutIcon;
+      case "Martial Arts":
+        return indoorOutdoor === "indoor"
+          ? martialArtsInIcon
+          : martialArtsOutIcon;
+      case "Running":
+        return indoorOutdoor === "indoor" ? runningInIcon : runningOutIcon;
+      case "Soccer":
+        return indoorOutdoor === "indoor" ? soccerInIcon : soccerOutIcon;
+      case "Swimming":
+        return indoorOutdoor === "indoor" ? swimmingInIcon : swimmingOutIcon;
+      case "Yoga":
+        return indoorOutdoor === "indoor" ? yogaInIcon : yogaOutIcon;
+      default:
+        return customIcon; // Default icon if activity doesn't match
+    }
+  };
 
   const createCustomClusterIcon = (cluster) => {
     return new divIcon({
@@ -101,7 +241,11 @@ const MapComponent = ({ selectedActivity }) => {
         iconCreateFunction={createCustomClusterIcon}
       >
         {markers.map((marker) => (
-          <Marker position={marker.geocode} icon={customIcon}>
+          <Marker
+            key={marker.popUp} // Unique key for each marker
+            position={marker.geocode}
+            icon={getActivityIcon(marker.activity, marker.indoorOutdoor)}
+          >
             <Popup>
               <div className="popup-content">
                 <img
@@ -118,7 +262,9 @@ const MapComponent = ({ selectedActivity }) => {
                   >
                     Log Activity
                   </button>
-                  <p className="rating-maintext">Rate the activity!<br></br>(1-Horrible, 5-Amazing)</p>
+                  <p className="rating-maintext">
+                    Rate the activity!<br></br>(1-Horrible, 5-Amazing)
+                  </p>
                   <div className="rating-slider">
                     <label>{marker.rating}</label>
                     <input
@@ -133,7 +279,7 @@ const MapComponent = ({ selectedActivity }) => {
                         )
                       }
                     />
-                    <div className = "rating-labels">
+                    <div className="rating-labels">
                       <span>1</span>
                       <span>2</span>
                       <span>3</span>
@@ -152,7 +298,6 @@ const MapComponent = ({ selectedActivity }) => {
             </Popup>
           </Marker>
         ))}
-        ;
       </MarkerClusterGroup>
       {/* Add custom zoom control to bottom left */}
       <CustomZoomControl />

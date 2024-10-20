@@ -42,10 +42,36 @@ body {
 }
 
 /* LOGIN FORM PORTION (RIGHT SIDE) */
+@keyframes fadeInSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOutSlideOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
 
 .LoginForm {
   flex: 1;
   padding-left: 150px;
+  animation: fadeInSlideIn 0.5s forwards;
+}
+
+.LoginForm.fade-out {
+  animation: fadeOutSlideOut 0.5s forwards;
 }
 
 .LoginForm h1 {
