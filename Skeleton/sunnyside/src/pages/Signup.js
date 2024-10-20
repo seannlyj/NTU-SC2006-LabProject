@@ -11,7 +11,6 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [fadeOut, setFadeOut] = useState(false);
 
   const navigate = useNavigate();
@@ -61,14 +60,13 @@ const SignUp = () => {
 
       // If signup is successful, set success message
       setErrorMessage(""); // Clear error message if signup is successful
-
+      alert("User Successfully Created");
       navigate("/login");
     } catch (error) {
       // Handle signup failure
       const message =
         error.response?.data?.message || "Signup failed. Please try again.";
       setErrorMessage(message); // Set the error message state
-      setSuccessMessage(""); // Clear success message if there's an error
     }
   };
 
@@ -84,8 +82,6 @@ const SignUp = () => {
         <h1>Create Account</h1>
         {errorMessage && <div className="error">{errorMessage}</div>}{" "}
         {/* Display error message if exists */}
-        {successMessage && <div className="success">{successMessage}</div>}{" "}
-        {/* Display success message if exists */}
         <form onSubmit={handleSubmit}>
           {" "}
           {/* Call handleSubmit on form submission */}
