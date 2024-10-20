@@ -2,15 +2,15 @@ import logo from "../../art/sunnysidelogo.PNG";
 import React, { useState, useEffect } from "react";
 import ChangePW from "./ChangePW";
 import "../../styling/EditProfilePanel.css";
+import axios from "axios"; // Import axios for making API requests
 
 function EditProfilePanel({
   isOpen,
   toggleEditProfilePanel,
   preferences,
   setPreferences,
-  //userEmail,
+  updateUser, // new prop passed from Landing.js to update user globally
 }) {
-  // Example preferences, replace with actual data as needed
   const allActivities = [
     "Running",
     "Swimming",
@@ -22,50 +22,54 @@ function EditProfilePanel({
     "Soccer",
     "Basketball",
   ];
-  // State to hold selected activities
+
   const [selectedActivities, setSelectedActivities] = useState(preferences);
-
-  // State to hold first name and last name
-  const [firstName, setFirstName] = useState("John");
-  const [lastName, setLastName] = useState("Doe");
-
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [isResetPWPanelOpen, setIsResetPWPanelOpen] = useState(false);
 
-  // Mock function to simulate updating the name in a database
-  const updateNameInDatabase = (firstName, lastName) => {
-    console.log(`Updating name in database: ${firstName} ${lastName}`);
+  const staticEmail = "mysterystudent007@gmail.com"; // Static email for user
+
+  // Fetch user's data from the database
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(`/api/users/${staticEmail}`); // Use static email
+      const user = response.data;
+      setFirstName(user.firstname);
+      setLastName(user.lastname);
+      setSelectedActivities(user.preferences || []);
+      console.log("User data fetched successfully!");
+    } catch (err) {
+      console.error("Error fetching user data:", err);
+    }
   };
 
-  // Mock function to simulate fetching user's name from database
-  const fetchName = () => {
-    const mockFirstName = "John";
-    const mockLastName = "Doe";
-    setFirstName(mockFirstName);
-    setLastName(mockLastName);
-    console.log("Name fetched successfully!");
+  // Update the user's name and preferences in the database
+  const updateUserData = async (updatedData) => {
+    try {
+      const response = await axios.patch(`/api/users/${staticEmail}`, updatedData); // Use static email
+      console.log("User data updated successfully!", response.data);
+
+      // Call the updateUser method to reflect changes in the parent component (Landing.js)
+      updateUser(response.data); // Propagates updated data to Landing.js
+    } catch (err) {
+      console.error("Error updating user data:", err);
+    }
   };
 
-  // Mock function to simulate fetching selected activities from a database
-  const fetchSelectedActivities = () => {
-    // Simulate a delay
-    const mockSelectedActivities = ["Running", "Swimming", "Hiking"];
-    setSelectedActivities(mockSelectedActivities);
-    console.log("Selected activities fetched successfully!");
-  };
-
-  // Handle form submission for first name and last name form
+  // Handle form submission for updating the user's name
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateNameInDatabase(firstName, lastName);
+    const updatedData = { firstname: firstName, lastname: lastName };
+    updateUserData(updatedData);
   };
 
-  // Fetch selected activities when the component mounts
+  // Fetch user data when the component mounts
   useEffect(() => {
-    fetchName();
-    fetchSelectedActivities();
-  }, []);
+    fetchUserData();
+  }, []); // Empty dependency array to fetch only once on mount
 
-  // Handle activity selection (User is limited to selected 3 activities)
+  // Handle activity selection (User is limited to selecting 3 activities)
   const handleActivityClick = (activity) => {
     let newSelectedActivities;
     if (selectedActivities.includes(activity)) {
@@ -77,10 +81,10 @@ function EditProfilePanel({
       return;
     }
     setSelectedActivities(newSelectedActivities);
-    setPreferences(newSelectedActivities); // Update preferences in parent component
+    setPreferences(newSelectedActivities);
+    updateUserData({ preferences: newSelectedActivities });
   };
 
-  // Group activities into rows of 3
   const groupedActivities = [];
   for (let i = 0; i < allActivities.length; i += 3) {
     groupedActivities.push(allActivities.slice(i, i + 3));
@@ -161,10 +165,9 @@ function EditProfilePanel({
 
           <button
             className="ChangePasswordButton"
-            // onClick={() => alert("Change Password here")}
             onClick={() => setIsResetPWPanelOpen(true)}
           >
-            <span className="material-icons ">password</span>
+            <span className="material-icons">password</span>
             Change Password
           </button>
         </div>
@@ -179,3 +182,4 @@ function EditProfilePanel({
 }
 
 export default EditProfilePanel;
+
