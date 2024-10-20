@@ -9,7 +9,7 @@ function EditProfilePanel({
   toggleEditProfilePanel,
   preferences,
   setPreferences,
-  userEmail, // new prop passed from Landing.js
+  updateUser, // new prop passed from Landing.js to update user globally
 }) {
   const allActivities = [
     "Running",
@@ -26,11 +26,14 @@ function EditProfilePanel({
   const [selectedActivities, setSelectedActivities] = useState(preferences);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [isResetPWPanelOpen, setIsResetPWPanelOpen] = useState(false);
+
+  const staticEmail = "mysterystudent007@gmail.com"; // Static email for user
 
   // Fetch user's data from the database
   const fetchUserData = async () => {
     try {
-      const response = await axios.get(`/api/users/${userEmail}`); // Use userEmail prop
+      const response = await axios.get(`/api/users/${staticEmail}`); // Use static email
       const user = response.data;
       setFirstName(user.firstname);
       setLastName(user.lastname);
@@ -44,8 +47,11 @@ function EditProfilePanel({
   // Update the user's name and preferences in the database
   const updateUserData = async (updatedData) => {
     try {
-      const response = await axios.patch(`/api/users/${userEmail}`, updatedData); // Use userEmail prop
+      const response = await axios.patch(`/api/users/${staticEmail}`, updatedData); // Use static email
       console.log("User data updated successfully!", response.data);
+
+      // Call the updateUser method to reflect changes in the parent component (Landing.js)
+      updateUser(response.data); // Propagates updated data to Landing.js
     } catch (err) {
       console.error("Error updating user data:", err);
     }
@@ -54,13 +60,14 @@ function EditProfilePanel({
   // Handle form submission for updating the user's name
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateUserData({ firstname: firstName, lastname: lastName });
+    const updatedData = { firstname: firstName, lastname: lastName };
+    updateUserData(updatedData);
   };
 
   // Fetch user data when the component mounts
   useEffect(() => {
     fetchUserData();
-  }, [userEmail]); // Refetch data if userEmail changes
+  }, []); // Empty dependency array to fetch only once on mount
 
   // Handle activity selection (User is limited to selecting 3 activities)
   const handleActivityClick = (activity) => {
@@ -158,7 +165,6 @@ function EditProfilePanel({
 
           <button
             className="ChangePasswordButton"
-            // onClick={() => alert("Change Password here")}
             onClick={() => setIsResetPWPanelOpen(true)}
           >
             <span className="material-icons">password</span>
@@ -175,3 +181,4 @@ function EditProfilePanel({
 }
 
 export default EditProfilePanel;
+

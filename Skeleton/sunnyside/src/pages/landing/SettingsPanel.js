@@ -1,55 +1,63 @@
 import logo from "../../art/sunnysidelogo.PNG";
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // Import axios for API calls
+import axios from "axios";
 import "../../styling/SettingsPanel.css";
 
 function SettingsPanel({
   isOpen,
-  toggleSettingsPanel,
+  toggleSettingsPanel, // Function to close the SettingsPanel
   toggleEditProfilePanel,
-  userEmail,  // Assuming user's email is passed as a prop
+  preferences,
+  setPreferences, // New prop to allow preference updates
 }) {
-  // State to hold user information
-  const [userData, setUserData] = useState({
-    firstname: "",
-    lastname: "",
-    preferences: [],
-  });
+  // State to hold user's name and email
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const email = "mysterystudent007@gmail.com"; // Hardcoded email
 
+  // State to hold activities
   const [activities, setActivities] = useState([]);
 
-  // Function to fetch user data from the database
-  const fetchUserData = async () => {
+  // State to hold user's preferences
+  const [userPreferences, setUserPreferences] = useState([]);
+
+  // Function to fetch user's details from the database
+  const fetchUserDetails = async () => {
     try {
-      console.log(userData);
-      const response = await axios.get(`/api/users/${userEmail}`);
-      setUserData({
-        firstname: response.data.firstname,
-        lastname: response.data.lastname,
-        preferences: response.data.activities || [], // Fetched activity preferences
-      });
-      console.log("User data fetched:", response.data);
+      const response = await axios.get(`/api/users/${email}`);
+      const user = response.data[0]; // Access the first user in the array
+      setFirstName(user.firstname);
+      setLastName(user.lastname);
+      
+      // Update user preferences
+      setUserPreferences([
+        user.preference1,
+        user.preference2,
+        user.preference3,
+      ].filter(preference => preference)); // Filter out any undefined preferences
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      console.error("Error fetching user details:", error);
     }
   };
 
-  // Function to fetch recent activities from the database
-  const fetchActivities = async () => {
-    try {
-      const response = await axios.get(`/api/activities/${userEmail}`);
-      setActivities(response.data);
-      console.log("Activities fetched:", response.data);
-    } catch (error) {
-      console.error("Error fetching activities:", error);
-    }
+  // Function to fetch activities from the database
+  const fetchActivities = () => {
+    // You can also fetch activities here if needed
   };
 
-  // Fetch user data and activities when the component mounts
+  // Fetch user details when the component mounts or when `isOpen` changes
   useEffect(() => {
-    fetchUserData();
-    fetchActivities();
-  }, [userEmail]);
+    if (isOpen) {
+      fetchUserDetails();
+      fetchActivities(); // This could be left as is if you plan to fetch activities later
+    }
+  }, [isOpen]); // Refetch data when the panel opens
+
+  // Modified function to open EditProfilePanel and close SettingsPanel
+  const handleEditProfile = () => {
+    toggleEditProfilePanel();  // Open EditProfilePanel
+    toggleSettingsPanel();     // Close SettingsPanel
+  };
 
   return (
     <div>
@@ -62,7 +70,7 @@ function SettingsPanel({
             <div className="ButtonContainer">
               <span
                 className="material-icons EditOutlined"
-                onClick={toggleEditProfilePanel}
+                onClick={handleEditProfile}  // Use modified handler
               >
                 edit
               </span>
@@ -79,14 +87,13 @@ function SettingsPanel({
             <span className="material-icons ProfileIcon">person</span>
           </div>
 
-          {/* Display user's full name */}
-          <h4 className="UserName">{`${userData.firstname} ${userData.lastname}`}</h4>
-          {/* Display user's email */}
-          <label className="UserEmail">{userEmail}</label>
+          <h4 className="UserName">
+            {firstName} {lastName}
+          </h4>
+          <label className="UserEmail">{email}</label>
 
-          {/* Display user's activity preferences */}
           <div className="UserPreferences">
-            {userData.preferences.map((preference, index) => (
+            {userPreferences.map((preference, index) => (
               <div key={index} className="PreferenceTag">
                 {preference}
               </div>
@@ -119,7 +126,6 @@ function SettingsPanel({
           <button className="LogoutButton" onClick={() => alert("Logged out")}>
             <span className="material-icons">logout</span>
             Log out
-            
           </button>
         </div>
       </div>
