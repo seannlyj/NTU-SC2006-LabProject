@@ -2,3 +2,53 @@ body {
   font-family: "Josefin Sans", sans-serif;
   background-color: #a3d4f7; /* Dark background */
 }
+
+.header {
+  width: 100%;
+  position: relative;
+  z-index: 1; /* Ensure the button stays above other content */
+}
+
+.content-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: calc(100vh - 60px); /* Subtract header height to avoid overlap */
+  position: relative;
+  z-index: 0;
+}
+
+.map-wrapper {
+  width: 70%;
+  height: 100%;
+  position: relative;
+  z-index: 0;
+}
+
+.cluster-icon{
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+  background-color: #fff;
+  transform: translate(-25%, -25%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1rem;
+}
+
+.register-button{
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #27c93a;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.register-button:hover{
+  background-color: #087e06;
+}

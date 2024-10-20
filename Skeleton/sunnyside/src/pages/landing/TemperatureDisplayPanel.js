@@ -9,53 +9,123 @@ import showers from "../../art/weather-icons/showers.png";
 import thundery_showers from "../../art/weather-icons/thundery-showers.png";
 import windy from "../../art/weather-icons/windy.png";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-function TemperatureDisplayPanel() {
-  const [weather, setWeather] = useState("cloudy_day"); // Set variable for weather icon and set it's default to cloud
+function TemperatureDisplayPanel({
+  weather,
+  weatherName,
+  weatherCutoffTime,
+  temperature,
+  location,
+  activities,
+  onActivityClick,
+}) {
+  const [dayTime, setDayTime] = useState("FRIDAY, 00:00");
 
-  //use a useEffect to fetch weather data from API here
-  //...
+  //use a useEffect to fetch info from individual APIs
+  useEffect(() => {
+    //Mock function for daytime
+    fetchDayTimeData();
+  }, []);
+
+  const fetchDayTimeData = async () => {
+    //Mock function api call (to replace later on)
+    const dayTimeData = await fetchDayTimeFromAPI();
+    setDayTime(dayTimeData.dayTime);
+  };
 
   const weatherIcon = getWeatherIcon(weather);
 
   return (
     <div className={`SidePanel`}>
       <img src={weatherIcon} alt={weather} className="WeatherIcon" />
-      {/* <a className='Temperature'>Placeholder</a>
-      <a className='Location'>Placeholder</a>
-      <a className='Day'>Placeholder</a>
+      <label className="Temperature">{temperature}&deg;C</label>
+      <label className="Location">{location} </label>
+      <label className="Day">{dayTime}</label>
+      <div className="WeatherInfoFromAPI">
+        <label className="WeatherName">{weatherName}</label>
+        <label className="WeatherCutoffTime">{weatherCutoffTime}</label>
+      </div>
 
-      <h3>Nearby Activities</h3>
-      <a href="#">Home</a>
-      <a href="#">About</a>
-      <a href="#">Contact</a> */}
+      <h3>NEARBY ACTIVITIES</h3>
+      <div className="ActivitiesContainer">
+        {activities.map((activity, index) => (
+          <div
+            className="Activity"
+            key={index}
+            onClick={() => onActivityClick(activity)} // Handle click
+          >
+            <div className="ActivityDetails">
+              <h4>{activity.name}</h4>
+              <p>{activity.description}</p>
+            </div>
+            <label className="ActivityDistance">{activity.distance}</label>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
 function getWeatherIcon(weather) {
-  switch (weather) {
-    case "cloud":
-      return cloud;
-    case "cloudy_day":
-      return cloudy_day;
-    case "cloudy_night":
-      return cloudy_night;
-    case "fair_day":
-      return fair_day;
-    case "fair_night":
-      return fair_night;
-    case "fog":
-      return fog;
-    case "showers":
-      return showers;
-    case "thundery_showers":
-      return thundery_showers;
-    case "windy":
-      return windy;
-    default:
-      return cloud;
+  if (weather === "Partly Cloudy" || weather === "Cloudy") {
+    return cloud;
+  } else if (weather === "Partly Cloudy(Day)") {
+    return cloudy_day;
+  } else if (weather === "Partly Cloudy(Night)") {
+    return cloudy_night;
+  } else if (
+    weather === "Fair(Day)" ||
+    weather === "Fair" ||
+    weather === "Warm"
+  ) {
+    return fair_day;
+  } else if (weather === "Fair(Night)") {
+    return fair_night;
+  } else if (
+    weather === "Hazy" ||
+    weather === "Slightly Hazy" ||
+    weather === "Mist" ||
+    weather === "Fog"
+  ) {
+    return fog;
+  } else if (
+    weather === "Passing Showers" ||
+    weather === "Light Showers" ||
+    weather === "Showers" ||
+    weather === "Heavy Showers" ||
+    weather === "Light Rain" ||
+    weather === "Moderate Rain" ||
+    weather === "Heavy Rain"
+  ) {
+    return showers;
+  } else if (
+    weather === "Thundery Showers" ||
+    weather === "Heavy Thundery Showers" ||
+    weather === "Heavy Thunder Showers with Gusty Wind"
+  ) {
+    return thundery_showers;
+  } else if (weather === "Windy") {
+    return windy;
+  } else {
+    return cloud;
+  }
+}
+
+async function fetchDayTimeFromAPI() {
+  try {
+    const response = await fetch('http://worldtimeapi.org/api/timezone/Europe/London'); // Example API endpoint
+    const data = await response.json();
+
+    // Extracting the current datetime and formatting it
+    const currentDateTime = new Date(data.datetime);
+    const day = currentDateTime.toLocaleDateString("en-GB", { weekday: 'long' }).toUpperCase(); // E.g., "FRIDAY"
+    const time = currentDateTime.toLocaleTimeString("en-GB", { hour: '2-digit', minute: '2-digit' }); // E.g., "12:00"
+    
+    return { dayTime: `${day}, ${time}` };
+  } catch (error) {
+    console.error("Error fetching daytime:", error);
+    return { dayTime: "Error fetching time" }; // Return a fallback if there's an error
   }
 }
 
