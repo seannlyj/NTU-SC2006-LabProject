@@ -114,14 +114,21 @@ function getWeatherIcon(weather) {
 
 async function fetchDayTimeFromAPI() {
   try {
-    const response = await fetch('http://worldtimeapi.org/api/timezone/Europe/London'); // Example API endpoint
+    const response = await fetch(
+      "http://worldtimeapi.org/api/timezone/Europe/London"
+    ); // Example API endpoint
     const data = await response.json();
 
     // Extracting the current datetime and formatting it
     const currentDateTime = new Date(data.datetime);
-    const day = currentDateTime.toLocaleDateString("en-GB", { weekday: 'long' }).toUpperCase(); // E.g., "FRIDAY"
-    const time = currentDateTime.toLocaleTimeString("en-GB", { hour: '2-digit', minute: '2-digit' }); // E.g., "12:00"
-    
+    const day = currentDateTime
+      .toLocaleDateString("en-GB", { weekday: "long" })
+      .toUpperCase(); // E.g., "FRIDAY"
+    const time = currentDateTime.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }); // E.g., "12:00"
+
     return { dayTime: `${day}, ${time}` };
   } catch (error) {
     console.error("Error fetching daytime:", error);

@@ -7,7 +7,7 @@ import MapComponent from "./MapComponent"; // Import the MapComponent
 import HintPanel from "./HintPanel.js";
 import { getRecommendedActivities } from "./ActivityRecommendation.js";
 import React, { useState, useEffect } from "react";
-//import { useLocation } from 'react-router-dom'; // Import useLocation to get passed email
+import { useLocation } from "react-router-dom"; // Import useLocation to get passed email
 
 /*const Landing = () => {
   // Extract email from useLocation
@@ -16,6 +16,10 @@ import React, { useState, useEffect } from "react";
   */
 
 const Landing = () => {
+  // Extract email from useLocation
+  const locationState = useLocation();
+  const { email } = locationState.state;
+
   //FOR TESTING, TO REMOVE AFTER DONE TESTING RECOMMENDED ACTIVITIES
   const defaultMarkers = [
     {
@@ -239,6 +243,7 @@ const Landing = () => {
           toggleSettingsPanel={toggleSettingsPanel}
           toggleEditProfilePanel={toggleEditProfilePanel}
           preferences={preferences}
+          email={email}
         />
         <EditProfilePanel
           isOpen={isEditProfileOpen}
@@ -247,6 +252,7 @@ const Landing = () => {
           setPreferences={(newPreferences) => {
             setPreferences(newPreferences);
           }}
+          email={email}
         />
       </div>
     </div>

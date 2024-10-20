@@ -1,5 +1,5 @@
 import logo from "../../art/sunnysidelogo.PNG";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../styling/SettingsPanel.css";
@@ -10,11 +10,12 @@ function SettingsPanel({
   toggleEditProfilePanel,
   preferences,
   setPreferences, // New prop to allow preference updates
+  email,
 }) {
   // State to hold user's name and email
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const email = "mysterystudent007@gmail.com"; // Hardcoded email
+  //const email = "mysterystudent007@gmail.com"; // Hardcoded email
 
   // State to hold activities
   const navigate = useNavigate();
@@ -30,13 +31,13 @@ function SettingsPanel({
       const user = response.data[0]; // Access the first user in the array
       setFirstName(user.firstname);
       setLastName(user.lastname);
-      
+
       // Update user preferences
-      setUserPreferences([
-        user.preference1,
-        user.preference2,
-        user.preference3,
-      ].filter(preference => preference)); // Filter out any undefined preferences
+      setUserPreferences(
+        [user.preference1, user.preference2, user.preference3].filter(
+          (preference) => preference
+        )
+      ); // Filter out any undefined preferences
     } catch (error) {
       console.error("Error fetching user details:", error);
     }
@@ -57,8 +58,8 @@ function SettingsPanel({
 
   // Modified function to open EditProfilePanel and close SettingsPanel
   const handleEditProfile = () => {
-    toggleEditProfilePanel();  // Open EditProfilePanel
-    toggleSettingsPanel();     // Close SettingsPanel
+    toggleEditProfilePanel(); // Open EditProfilePanel
+    toggleSettingsPanel(); // Close SettingsPanel
   };
 
   return (
@@ -72,7 +73,7 @@ function SettingsPanel({
             <div className="ButtonContainer">
               <span
                 className="material-icons EditOutlined"
-                onClick={handleEditProfile}  // Use modified handler
+                onClick={handleEditProfile} // Use modified handler
               >
                 edit
               </span>
@@ -125,11 +126,13 @@ function SettingsPanel({
             </tbody>
           </table>
 
-          <button className="LogoutButton" onClick={() => {
-            alert("Logged out");
-            navigate("/login");
+          <button
+            className="LogoutButton"
+            onClick={() => {
+              alert("Logged out");
+              navigate("/login");
             }}
-            >
+          >
             <span className="material-icons">logout</span>
             Log out
           </button>

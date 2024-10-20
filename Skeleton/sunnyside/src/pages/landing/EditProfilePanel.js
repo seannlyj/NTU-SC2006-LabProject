@@ -21,7 +21,8 @@ function EditProfilePanel({
   toggleEditProfilePanel,
   preferences,
   setPreferences,
-  updateUser, // new prop passed from Landing.js to update user globally
+  //updateUser, // new prop passed from Landing.js to update user globally
+  email,
 }) {
   // State to hold selected activities
   const [selectedActivities, setSelectedActivities] = useState(preferences);
@@ -29,12 +30,12 @@ function EditProfilePanel({
   const [lastName, setLastName] = useState("");
   const [isResetPWPanelOpen, setIsResetPWPanelOpen] = useState(false);
 
-  const staticEmail = "mysterystudent007@gmail.com"; // Static email for user
+  //const staticEmail = "mysterystudent007@gmail.com"; // Static email for user
 
   // Fetch user's data from the database
   const fetchUserData = async () => {
     try {
-      const response = await axios.get(`/api/users/${staticEmail}`); // Use static email
+      const response = await axios.get(`/api/users/${email}`); // Use static email
       const user = response.data;
       setFirstName(user.firstname);
       setLastName(user.lastname);
@@ -48,14 +49,11 @@ function EditProfilePanel({
   // Update the user's name and preferences in the database
   const updateUserData = async (updatedData) => {
     try {
-      const response = await axios.patch(
-        `/api/users/${staticEmail}`,
-        updatedData
-      ); // Use static email
+      const response = await axios.patch(`/api/users/${email}`, updatedData); // Use static email
       console.log("User data updated successfully!", response.data);
 
       // Call the updateUser method to reflect changes in the parent component (Landing.js)
-      updateUser(response.data); // Propagates updated data to Landing.js
+      //updateUser(response.data); // Propagates updated data to Landing.js
     } catch (err) {
       console.error("Error updating user data:", err);
     }
@@ -180,7 +178,7 @@ function EditProfilePanel({
       <ChangePW
         isOpen={isResetPWPanelOpen}
         onClose={() => setIsResetPWPanelOpen(false)}
-        userEmail={userEmail}
+        userEmail={email}
       />
     </div>
   );

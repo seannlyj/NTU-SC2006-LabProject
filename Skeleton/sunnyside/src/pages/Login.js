@@ -50,7 +50,7 @@ function Login() {
       console.log(`Checking password`);
       // console.log('Correct Password: ', correct_pw); remove this for security purposes
       if (password == correct_pw) {
-        navigate("/landing");
+        navigate("/landing", { state: { email: email } });
         //setFadeOut(true);
         //setTimeout(() => navigate("/landing"), 1000); // Wait for the animation to complete
       } else {
