@@ -246,7 +246,10 @@ const Landing = () => {
           weatherCutoffTime={weatherCutoffTime}
           temperature={temperature}
           location={location}
-          activities={recommendedActivities}
+          activities={recommendedActivities.map(activity => ({
+            ...activity,
+            distance: `${calculateDistance(latitude, longitude, activity.geocode[0], activity.geocode[1]).toFixed(2)} KM`, // Calculate and include distance
+          }))}
           onActivityClick={handleActivityClick} // Pass the handler
         />
         {geoError && <p className="geo-error">{geoError}</p>}{" "}
