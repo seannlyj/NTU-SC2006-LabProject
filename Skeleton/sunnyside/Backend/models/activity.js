@@ -20,7 +20,20 @@ const ActivitySchema = new mongoose.Schema({
     long:{
         type: String,
         required: true
+    },
+    popUp:{
+        type: String,
+        required: true
+    },
+    indoorOutdoor:{
+        type: String,
+        required: true
+    },
+    sport:{
+        type: String,
+        required: true
     }
+
 });
 
 // this function checks if the activity already exists, based on the Lat Long

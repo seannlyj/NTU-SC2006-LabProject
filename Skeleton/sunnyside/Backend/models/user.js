@@ -21,17 +21,17 @@ const UserSchema = new mongoose.Schema({
     preference1: {
         type: String,
         required: false,
-        default: 'Running'
+        default: 'None'
     },
     preference2: {
         type: String,
         required: false,
-        default: 'Swimming'
+        default: 'None'
     },
     preference3: {
         type: String,
         required: false,
-        default: 'Hiking'
+        default: 'None'
     },
     activitylog:[{
         activityName:{

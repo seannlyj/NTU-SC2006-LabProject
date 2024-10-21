@@ -34,7 +34,10 @@ router.post('/', async(req, res) => {
         description: req.body.description,
         rating: req.body.rating,
         lat: req.body.lat,
-        long: req.body.long
+        long: req.body.long,
+        popUp: req.body.popUp,
+        indoorOutdoor: req.body.indoorOutdoor,
+        sport: req.body.sport
     });
     // this works to get an array of preferences
     // const prefs = req.body.preference;
@@ -52,5 +55,28 @@ router.post('/', async(req, res) => {
         res.status(400).json({message: err.message});
     }
 });
+
+// PATCH Route, to update the details of an existing activity
+router.patch('/', async(req, res) => {
+    try{
+        // find this activity based on the lat long
+        const activity = await User.find({lat: req.params.lat, long: req.params.long});
+        if(!activity){
+            return res.status(404).json({message: 'Activity not found'});
+        }
+
+        // if the request body contains a rating, update the activities rating to be a average
+        if(req.body.rating){
+            activity.rating = (activity.rating + req.body.rating) / 2;
+        }
+
+        // Mongoose knows that we changed an existing activity
+        // So it will convert the save() function call into an update
+        const updatedActivity = await activity.save();
+        res.status(200).json(updatedActivity);
+    } catch(err) {
+        res.status(400).json({message: err.message});
+    }
+})
 
 module.exports = router;
