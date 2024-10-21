@@ -126,7 +126,6 @@ const Landing = () => {
     }
   }, []);
 
-
   // useEffect to get recommended activities after fetching all necessary data
   useEffect(() => {
     if (activities.length > 0 && weather && preferences.length >= 0) {
@@ -136,7 +135,6 @@ const Landing = () => {
         weather
       );
       setRecommendedActivities(recommended);
-      
     }
   }, [activities, weather, preferences, markers]);
 
@@ -214,22 +212,20 @@ const Landing = () => {
   const fetchNearbyActivities = async (lat, lon) => {
     const activitiesData = await fetchActivitiesFromAPI(lat, lon);
     setActivities(activitiesData.activities);
-    const formattedMarkers = activitiesData.activities.map(activity => ({
+    const formattedMarkers = activitiesData.activities.map((activity) => ({
       geocode: activity.geocode,
       popUp: activity.name,
       description: activity.description,
       image: require("../../art/activity-thumbnails/indoor-yoga.jpg"), // Placeholder for activity image
-      activity: activity.activity, 
-      indoorOutdoor: activity.indoorOutdoor, 
-  }));
-  setMarkers(formattedMarkers);  
+      activity: activity.activity,
+      indoorOutdoor: activity.indoorOutdoor,
+    }));
+    setMarkers(formattedMarkers);
   };
 
   const handleActivityClick = (activity) => {
     setSelectedActivity(activity);
   };
-
-
 
   return (
     <div className="Landing">
@@ -250,7 +246,7 @@ const Landing = () => {
           weatherCutoffTime={weatherCutoffTime}
           temperature={temperature}
           location={location}
-          activities={activities}
+          activities={recommendedActivities}
           onActivityClick={handleActivityClick} // Pass the handler
         />
         {geoError && <p className="geo-error">{geoError}</p>}{" "}
@@ -279,7 +275,6 @@ const Landing = () => {
 // Mock API functions
 //Modify variables here to test different weather conditions
 async function fetchWeatherFromAPI(lat, lon) {
-
   let closestArea = null;
   let closestDistance = Infinity;
   let forecastForClosest = null;
@@ -405,7 +400,6 @@ async function fetchLocationFromAPI(lat, lon) {
   let nearestLocation = null; // To store the nearest location
   let nearestDistance = Infinity; // Start with a very large distance
 
-
   // Loop through area_metadata to find the nearest area
   forecastResponse.area_metadata.forEach((area) => {
     const areaLat = area.label_location.latitude;
@@ -434,33 +428,40 @@ async function fetchActivitiesFromAPI(lat, lon) {
 
     // Map over the activities array and calculate the distance
     const formattedActivities = response.data.map((activity) => {
-      const distance = calculateDistance(lat, lon, parseFloat(activity.lat), parseFloat(activity.long));
+      const distance = calculateDistance(
+        lat,
+        lon,
+        parseFloat(activity.lat),
+        parseFloat(activity.long)
+      );
       return {
         name: activity.name,
         description: activity.description,
-        distance: distance, 
+        distance: distance,
         geocode: [parseFloat(activity.lat), parseFloat(activity.long)],
-        activity: activity.sport,  // Ensure activity.sport is included here
-        indoorOutdoor: activity.indoorOutdoor
+        activity: activity.sport, // Ensure activity.sport is included here
+        indoorOutdoor: activity.indoorOutdoor,
       };
     });
 
     formattedActivities.sort((a, b) => a.distance - b.distance);
 
-    const finalActivities = formattedActivities.map(activity => ({
+    const finalActivities = formattedActivities.map((activity) => ({
       name: activity.name,
       description: activity.description,
       distance: `${activity.distance.toFixed(2)} KM`,
       geocode: activity.geocode,
       activity: activity.activity,
-      indoorOutdoor: activity.indoorOutdoor
+      indoorOutdoor: activity.indoorOutdoor,
     }));
     return {
       activities: finalActivities,
     };
-
   } catch (error) {
-    console.error("Error fetching user activities: ", error.response || error.message || error);
+    console.error(
+      "Error fetching user activities: ",
+      error.response || error.message || error
+    );
     return { activities: [] }; // Return an empty array on error
   }
 }
@@ -479,6 +480,5 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c; // Distance in kilometers
 }
-
 
 export default Landing;
