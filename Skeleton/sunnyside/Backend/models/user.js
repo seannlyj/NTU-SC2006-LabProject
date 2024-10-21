@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const activity = require('./activity');
+const bcrpyt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
     firstname:{
@@ -64,6 +64,17 @@ UserSchema.statics.doesUserExist = async function(userEmail){
         return true;
     }
 }
+
+// This function is ran before the Save() function is called, it hashes the password before saving it into the database
+UserSchema.pre('save', async function(next){
+    // If the password was not modified, we do not need to update it
+    if(!this.isModified('password')){
+        return next();
+    }
+    // If the password was modified, we need to hash the new password before we save it into the database
+    this.password = await bcrpyt.hash(this.password, 10);
+    next();
+});
 
 module.exports = mongoose.model('User', UserSchema);
 
