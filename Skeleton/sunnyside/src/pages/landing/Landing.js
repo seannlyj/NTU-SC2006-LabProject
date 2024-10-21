@@ -8,6 +8,7 @@ import HintPanel from "./HintPanel.js";
 import { getRecommendedActivities } from "./ActivityRecommendation.js";
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom"; // Import useLocation to get passed email
+import axios from "axios";
 
 /*const Landing = () => {
   // Extract email from useLocation
@@ -21,6 +22,7 @@ const Landing = () => {
   const { email } = locationState.state;
 
   //FOR TESTING, TO REMOVE AFTER DONE TESTING RECOMMENDED ACTIVITIES
+  /*
   const defaultMarkers = [
     {
       geocode: [1.3521, 103.8198],
@@ -58,7 +60,9 @@ const Landing = () => {
       activity: "Swimming", // Specify activity type
       indoorOutdoor: "outdoor", // Specify whether it's indoors or outdoors
     },
-  ];
+  ]; */
+
+  const [markers, setMarkers] = useState([]);
 
   //Settings Panel
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -122,17 +126,19 @@ const Landing = () => {
     }
   }, []);
 
+
   // useEffect to get recommended activities after fetching all necessary data
   useEffect(() => {
     if (activities.length > 0 && weather && preferences.length >= 0) {
       const recommended = getRecommendedActivities(
-        defaultMarkers,
+        markers,
         preferences,
         weather
       );
       setRecommendedActivities(recommended);
+      
     }
-  }, [activities, weather, preferences]);
+  }, [activities, weather, preferences, markers]);
 
   // useEffect to fetch data after getting latitude and longitude
   useEffect(() => {
@@ -208,11 +214,22 @@ const Landing = () => {
   const fetchNearbyActivities = async (lat, lon) => {
     const activitiesData = await fetchActivitiesFromAPI(lat, lon);
     setActivities(activitiesData.activities);
+    const formattedMarkers = activitiesData.activities.map(activity => ({
+      geocode: activity.geocode,
+      popUp: activity.name,
+      description: activity.description,
+      image: require("../../art/activity-thumbnails/indoor-yoga.jpg"), // Placeholder for activity image
+      activity: activity.activity, 
+      indoorOutdoor: activity.indoorOutdoor, 
+  }));
+  setMarkers(formattedMarkers);  
   };
 
   const handleActivityClick = (activity) => {
     setSelectedActivity(activity);
   };
+
+
 
   return (
     <div className="Landing">
@@ -262,21 +279,6 @@ const Landing = () => {
 // Mock API functions
 //Modify variables here to test different weather conditions
 async function fetchWeatherFromAPI(lat, lon) {
-  // Haversine formula to calculate distance between two points
-  function haversineDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radius of the Earth in kilometers
-    const dLat = (lat2 - lat1) * (Math.PI / 180);
-    const dLon = (lon2 - lon1) * (Math.PI / 180);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * (Math.PI / 180)) *
-        Math.cos(lat2 * (Math.PI / 180)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c; // Distance in kilometers
-    return distance;
-  }
 
   let closestArea = null;
   let closestDistance = Infinity;
@@ -313,7 +315,7 @@ async function fetchWeatherFromAPI(lat, lon) {
     // Loop through area metadata to find the closest area
     areaMetadata.forEach((area) => {
       const { latitude, longitude } = area.label_location;
-      const distance = haversineDistance(lat, lon, latitude, longitude);
+      const distance = calculateDistance(lat, lon, latitude, longitude);
 
       if (distance < closestDistance) {
         closestDistance = distance;
@@ -331,7 +333,7 @@ async function fetchWeatherFromAPI(lat, lon) {
     // Loop through temperature stations to find the closest temperature station
     tempData.data.stations.forEach((station) => {
       const { latitude, longitude } = station.location;
-      const distance = haversineDistance(lat, lon, latitude, longitude);
+      const distance = calculateDistance(lat, lon, latitude, longitude);
 
       if (distance < closestTempDistance) {
         closestTempDistance = distance;
@@ -403,20 +405,6 @@ async function fetchLocationFromAPI(lat, lon) {
   let nearestLocation = null; // To store the nearest location
   let nearestDistance = Infinity; // Start with a very large distance
 
-  // Function to calculate the distance between two lat/lon points using Haversine formula
-  function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radius of the Earth in kilometers
-    const dLat = (lat2 - lat1) * (Math.PI / 180);
-    const dLon = (lon2 - lon1) * (Math.PI / 180);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * (Math.PI / 180)) *
-        Math.cos(lat2 * (Math.PI / 180)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in kilometers
-  }
 
   // Loop through area_metadata to find the nearest area
   forecastResponse.area_metadata.forEach((area) => {
@@ -437,36 +425,60 @@ async function fetchLocationFromAPI(lat, lon) {
 }
 
 async function fetchActivitiesFromAPI(lat, lon) {
-  // Mock data for nearby activities
-  return {
-    activities: [
-      {
-        name: "TEST",
-        description: "Lorem ipsum dolor",
-        distance: "0.5 KM",
-        geocode: [1.3521, 103.8198],
-      },
-      {
-        name: "Indoor Yoga",
-        description: "Lorem ipsum dolor",
-        distance: "1.3 KM",
-        geocode: [1.3531, 103.8199],
-      },
-      {
-        name: "Boxing Gym",
-        description: "Lorem ipsum dolor",
-        distance: "2.0 KM",
-        geocode: [1.3541, 103.82],
-      },
-      {
-        name: "Swimming Pool",
-        description: "Lorem ipsum dolor",
-        distance: "2.3 KM",
-        geocode: [1.3551, 103.8201],
-      },
-      // Add more activities as needed
-    ],
-  };
+  try {
+    const response = await axios.get("api/activities/");
+    if (!response.data || !Array.isArray(response.data)) {
+      console.error("Invalid response data: ", response.data);
+      return { activities: [] }; // Return empty activities array if invalid
+    }
+
+    // Map over the activities array and calculate the distance
+    const formattedActivities = response.data.map((activity) => {
+      const distance = calculateDistance(lat, lon, parseFloat(activity.lat), parseFloat(activity.long));
+      return {
+        name: activity.name,
+        description: activity.description,
+        distance: distance, 
+        geocode: [parseFloat(activity.lat), parseFloat(activity.long)],
+        activity: activity.sport,  // Ensure activity.sport is included here
+        indoorOutdoor: activity.indoorOutdoor
+      };
+    });
+
+    formattedActivities.sort((a, b) => a.distance - b.distance);
+
+    const finalActivities = formattedActivities.map(activity => ({
+      name: activity.name,
+      description: activity.description,
+      distance: `${activity.distance.toFixed(2)} KM`,
+      geocode: activity.geocode,
+      activity: activity.activity,
+      indoorOutdoor: activity.indoorOutdoor
+    }));
+    return {
+      activities: finalActivities,
+    };
+
+  } catch (error) {
+    console.error("Error fetching user activities: ", error.response || error.message || error);
+    return { activities: [] }; // Return an empty array on error
+  }
 }
+
+// Function to calculate the distance between two lat/lon points using Haversine formula
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radius of the Earth in kilometers
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * (Math.PI / 180)) *
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in kilometers
+}
+
 
 export default Landing;
