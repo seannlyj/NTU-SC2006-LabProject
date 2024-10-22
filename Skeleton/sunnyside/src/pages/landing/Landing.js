@@ -238,6 +238,7 @@ const Landing = () => {
           <MapComponent
             selectedActivity={selectedActivity}
             markerData={recommendedActivities} // Pass recommended activities as markerData
+            email={email}
           />
         </div>
         <TemperatureDisplayPanel

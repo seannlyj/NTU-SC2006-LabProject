@@ -29,8 +29,10 @@ function SettingsPanel({
     try {
       const response = await axios.get(`/api/users/${email}`);
       const user = response.data[0]; // Access the first user in the array
+      console.log(user);
       setFirstName(user.firstname);
       setLastName(user.lastname);
+      setActivities(user.activitylog);
 
       // Update user preferences
       setUserPreferences(
@@ -42,19 +44,23 @@ function SettingsPanel({
       console.error("Error fetching user details:", error);
     }
   };
-
+/*
   // Function to fetch activities from the database
   const fetchActivities = () => {
     // You can also fetch activities here if needed
   };
 
+  */
+
   // Fetch user details when the component mounts or when `isOpen` changes
   useEffect(() => {
     if (isOpen) {
       fetchUserDetails();
-      fetchActivities(); // This could be left as is if you plan to fetch activities later
+      // fetchActivities(); // This could be left as is if you plan to fetch activities later
     }
   }, [isOpen]); // Refetch data when the panel opens
+
+  
 
   // Modified function to open EditProfilePanel and close SettingsPanel
   const handleEditProfile = () => {
@@ -131,7 +137,7 @@ function SettingsPanel({
             <tbody>
               {activities.map((activity, index) => (
                 <tr key={index}>
-                  <td>{activity.activity}</td>
+                  <td>{activity.activityName}</td>
                   <td>{activity.date}</td>
                   <td>{activity.time}</td>
                 </tr>

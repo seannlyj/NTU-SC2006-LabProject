@@ -4,8 +4,9 @@ import L, { Icon, divIcon, icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../../styling/MapComponent.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
+import axios from "axios";
 
-const MapComponent = ({ selectedActivity, markerData }) => {
+const MapComponent = ({ selectedActivity, markerData , email }) => {
   // Pinned locations should be passed as an array
   const defaultMarkers = [
     {
@@ -193,10 +194,43 @@ const MapComponent = ({ selectedActivity, markerData }) => {
 
   const zoomControlRef = useRef(null); // Ref to hold the zoom control
 
-  // Function to handle register button click
-  const handleRegister = (location) => {
-    alert(`Registered for ${location}`);
+  // Function to handle register button click (added logging of activity)
+  
+  const handleRegister = async (location) => {
+    console.log(email);
+    // alert(`Registered for ${location}`);
     // You can add your logic here, such as calling an API or updating a state
+    const currentDate = new Date();
+
+    const day = String(currentDate.getDate()).padStart(2, '0'); // Get day and pad with leading zero if needed
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Get month (0-indexed) and pad with leading zero
+    const year = currentDate.getFullYear(); // Get full year
+    
+    const formattedDate = `${day}-${month}-${year}`;
+    console.log(formattedDate); // Outputs: DD-MM-YYYY
+    
+    // Format the date to "YYYY-MM-DD" using toLocaleDateString
+    //const formattedDate = currentDate.toLocaleDateString('en-CA'); // 'en-CA' gives the date in "YYYY-MM-DD" format
+    
+
+    const loggedActivity = {
+      activityName: location, // "location" is the activity name
+      date: formattedDate,
+      time: currentDate.toLocaleTimeString(),
+    };
+    alert(`Logged activity: ${location}`);
+    console.log(loggedActivity);
+    
+    try {
+      // Make a request to update the user's activity log in the backend
+      await axios.patch(`/api/users/${email}`, {
+        activitylog: loggedActivity,
+      });
+   
+    } catch (error) {
+      console.error("Failed to log activity:", error);
+    }
+  
   };
 
   // Custom component to add zoom control to the bottom left
@@ -226,6 +260,7 @@ const MapComponent = ({ selectedActivity, markerData }) => {
 
     return null;
   };
+
 
   return (
     <MapContainer
