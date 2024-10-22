@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../art/sunnysidelogo.PNG";
 import "../styling/Login.css";
+const bcrpyt = require('bcryptjs');
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [fadeOut, setFadeOut] = useState(false);
-
   const navigate = useNavigate();
 
   // Fade out animation when user leaves the page
@@ -44,12 +44,11 @@ function Login() {
       const user = user_json.data[0];
       console.log(`Found user: `, user.email);
 
-      // const user = JSON.parse(user_json);
-      const correct_pw = user.password;
+      // Compare passwords
+      const passwordMatch = await bcrpyt.compare(password, user.password);
 
       console.log(`Checking password`);
-      // console.log('Correct Password: ', correct_pw); remove this for security purposes
-      if (password == correct_pw) {
+      if (passwordMatch) {
         navigate("/landing", { state: { email: email } });
         //setFadeOut(true);
         //setTimeout(() => navigate("/landing"), 1000); // Wait for the animation to complete
