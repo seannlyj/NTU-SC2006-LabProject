@@ -56,7 +56,7 @@ function TemperatureDisplayPanel({
             onClick={() => onActivityClick(activity)} // Handle click
           >
             <div className="ActivityDetails">
-              <h4>{activity.name}</h4>
+              <h4>{activity.popUp}</h4>
               <p>{activity.description}</p>
             </div>
             <label className="ActivityDistance">{activity.distance}</label>
