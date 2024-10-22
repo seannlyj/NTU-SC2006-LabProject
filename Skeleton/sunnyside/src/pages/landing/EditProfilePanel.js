@@ -2,7 +2,7 @@ import logo from "../../art/sunnysidelogo.PNG";
 import React, { useState, useEffect } from "react";
 import ChangePW from "./ChangePW";
 import "../../styling/EditProfilePanel.css";
-import axios from "axios"; // Import axios for making API requests
+import axios from "axios";
 
 export const allActivities = [
   "Running",
@@ -21,72 +21,55 @@ function EditProfilePanel({
   toggleEditProfilePanel,
   preferences,
   setPreferences,
-  //updateUser, // new prop passed from Landing.js to update user globally
   email,
 }) {
-  // State to hold selected activities
   const [selectedActivities, setSelectedActivities] = useState(preferences);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [isResetPWPanelOpen, setIsResetPWPanelOpen] = useState(false);
 
-  
-
-  // Fetch user's data from the database
   const fetchUserData = async () => {
     try {
       const response = await axios.get(`/api/users/${email}`); 
       const user = response.data[0];
       setFirstName(user.firstname);
       setLastName(user.lastname);
-      // CHANGED: Set the selected activities to the user's preferences correctly
+      // Filter out "None" and only set valid preferences
       const fetchedPreferences = [
         user.preference1,
         user.preference2,
         user.preference3,
-      ].filter((pref) => pref); // Filter out any undefined values
+      ].filter((pref) => pref && pref !== "None"); // Exclude "None"
 
-      setSelectedActivities(fetchedPreferences); // CHANGED: Initialize selectedActivities with fetched preferences
-      setPreferences(fetchedPreferences); // CHANGED: Update the preferences in the parent component
+      setSelectedActivities(fetchedPreferences); 
+      setPreferences(fetchedPreferences); 
       console.log("User data fetched successfully!");
     } catch (err) {
       console.error("Error fetching user data:", err);
     }
   };
 
-  // Update the user's name and preferences in the database
   const updateUserData = async (updatedData) => {
     try {
-      const response = await axios.patch(`/api/users/${email}`, updatedData); // Use static email
+      const response = await axios.patch(`/api/users/${email}`, updatedData);
       console.log("User data updated successfully!", response.data);
-
-      // Call the updateUser method to reflect changes in the parent component (Landing.js)
-      //updateUser(response.data); // Propagates updated data to Landing.js
     } catch (err) {
       console.error("Error updating user data:", err);
     }
   };
 
-  // Handle form submission for updating the user's name
   const handleSubmit = (e) => {
     e.preventDefault();
     const updatedData = { firstname: firstName, lastname: lastName };
     updateUserData(updatedData);
   };
 
-  // Fetch user data when the component mounts
-  //useEffect(() => {
-    //fetchUserData();
-  //}, []); // Empty dependency array to fetch only once on mount
-
-  // Fetch user data when the component mounts or when `isOpen` changes
   useEffect(() => {
     if (isOpen) {
       fetchUserData();
     }
-  }, [isOpen]); // Refetch data when the panel opens
+  }, [isOpen]);
 
-  // Handle activity selection (User is limited to selecting 3 activities)
   const handleActivityClick = (activity) => {
     let newSelectedActivities;
     if (selectedActivities.includes(activity)) {
