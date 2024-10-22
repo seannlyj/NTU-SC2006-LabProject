@@ -48,6 +48,9 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
   ];
 
   const [markers, setMarkers] = useState(markerData || defaultMarkers);
+  const [newRating, setNewRating] = useState("");
+  const [lat, setLat] = useState("");
+  const [long, setLong] = useState("");
 
   useEffect(() => {
     if (markerData) {
@@ -261,6 +264,23 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
     return null;
   };
 
+  const handleRating = async(e) => {
+    // e.preventDefault(); // Prevent default form submission
+
+    const data = {lat:"1.3415", long:"103.676", rating:newRating};
+
+    console.log("Entered location is", data);
+
+    try {
+
+      const response = await axios.patch('/api/activities/', data);
+
+    } catch (error) {
+      const message = error.response?.data?.message || 'Error. Please try again';
+      alert(message);
+    }
+
+  }
 
   return (
     <MapContainer
@@ -297,6 +317,8 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
                   >
                     Log Activity
                   </button>
+
+
                   <p className="rating-maintext">
                     Rate the activity!<br></br>(1-Horrible, 5-Amazing)
                   </p>
@@ -308,10 +330,12 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
                       max="5"
                       step="1"
                       defaultValue={marker.rating}
-                      onChange={(e) =>
-                        console.log(
-                          `New rating for ${marker.popUp}: ${e.target.value}`
-                        )
+                      onChange={(e) => {
+                        console.log(`New rating for ${marker.popUp}: ${e.target.value}`)
+                        setLat(marker.geocode[0].toString());
+                        setLong(marker.geocode[1].toString());
+                        setNewRating(e.target.value);
+                        }
                       }
                     />
                     <div className="rating-labels">
@@ -324,7 +348,7 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
                   </div>
                   <button
                     className="rating-button"
-                    onClick={() => handleRegister(marker.popUp)}
+                    onClick={() => handleRating()}
                   >
                     Rate Activity
                   </button>
