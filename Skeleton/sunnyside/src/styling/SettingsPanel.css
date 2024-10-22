@@ -113,6 +113,7 @@ body {
   border-radius: 50px;
   font-size: 14px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer; /* This will change the mouse pointer to a hand */
 }
 
 .BottomPanel {

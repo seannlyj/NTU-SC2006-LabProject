@@ -62,6 +62,13 @@ function SettingsPanel({
     toggleSettingsPanel(); // Close SettingsPanel
   };
 
+  // New function to handle clicks on user preferences
+  const handlePreferenceClick = (preference) => {
+    // Here you could pass the preference to the EditProfilePanel if needed
+    console.log("Clicked preference:", preference); // Log the clicked preference
+    handleEditProfile(); // Call the edit profile handler
+  };
+
   return (
     <div>
       <div className={`Settings ${isOpen ? "open" : ""}`}>
@@ -96,9 +103,15 @@ function SettingsPanel({
           <label className="UserEmail">{email}</label>
 
           <div className="UserPreferences">
+            {/* Map through user preferences and make each clickable */}
             {userPreferences.map((preference, index) => (
-              <div key={index} className="PreferenceTag">
-                {preference}
+              <div
+                key={index}
+                className="PreferenceTag"
+                onClick={() => handlePreferenceClick(preference)} // Clickable preference
+              >
+                {/* Display "+" if preference is 'None' */}
+                {preference === 'None' ? '+' : preference} 
               </div>
             ))}
           </div>

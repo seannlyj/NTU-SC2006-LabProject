@@ -30,16 +30,24 @@ function EditProfilePanel({
   const [lastName, setLastName] = useState("");
   const [isResetPWPanelOpen, setIsResetPWPanelOpen] = useState(false);
 
-  //const staticEmail = "mysterystudent007@gmail.com"; // Static email for user
+  
 
   // Fetch user's data from the database
   const fetchUserData = async () => {
     try {
-      const response = await axios.get(`/api/users/${email}`); // Use static email
-      const user = response.data;
+      const response = await axios.get(`/api/users/${email}`); 
+      const user = response.data[0];
       setFirstName(user.firstname);
       setLastName(user.lastname);
-      setSelectedActivities(user.preferences || []);
+      // CHANGED: Set the selected activities to the user's preferences correctly
+      const fetchedPreferences = [
+        user.preference1,
+        user.preference2,
+        user.preference3,
+      ].filter((pref) => pref); // Filter out any undefined values
+
+      setSelectedActivities(fetchedPreferences); // CHANGED: Initialize selectedActivities with fetched preferences
+      setPreferences(fetchedPreferences); // CHANGED: Update the preferences in the parent component
       console.log("User data fetched successfully!");
     } catch (err) {
       console.error("Error fetching user data:", err);
@@ -67,9 +75,16 @@ function EditProfilePanel({
   };
 
   // Fetch user data when the component mounts
+  //useEffect(() => {
+    //fetchUserData();
+  //}, []); // Empty dependency array to fetch only once on mount
+
+  // Fetch user data when the component mounts or when `isOpen` changes
   useEffect(() => {
-    fetchUserData();
-  }, []); // Empty dependency array to fetch only once on mount
+    if (isOpen) {
+      fetchUserData();
+    }
+  }, [isOpen]); // Refetch data when the panel opens
 
   // Handle activity selection (User is limited to selecting 3 activities)
   const handleActivityClick = (activity) => {
