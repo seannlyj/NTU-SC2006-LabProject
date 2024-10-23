@@ -60,14 +60,17 @@ router.post('/', async(req, res) => {
 router.patch('/', async(req, res) => {
     try{
         // find this activity based on the lat long
-        const activity = await User.find({lat: req.params.lat, long: req.params.long});
+        const activity = await Activity.findOne({lat: req.body.lat, long: req.body.long});
+
+        console.log('Activity is', activity);
+
         if(!activity){
             return res.status(404).json({message: 'Activity not found'});
         }
 
         // if the request body contains a rating, update the activities rating to be a average
         if(req.body.rating){
-            activity.rating = (activity.rating + req.body.rating) / 2;
+            activity.rating = req.body.rating;
         }
 
         // Mongoose knows that we changed an existing activity
