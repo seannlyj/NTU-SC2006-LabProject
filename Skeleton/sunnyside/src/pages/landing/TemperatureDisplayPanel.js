@@ -21,25 +21,42 @@ function TemperatureDisplayPanel({
   onActivityClick,
 }) {
   const [dayTime, setDayTime] = useState("FRIDAY, 00:00");
+  const [inputWeather, setInputWeather] = useState(weather); // Default value is the passed weather prop
+  const [currentWeather, setCurrentWeather] = useState(weather);
+  const [inputTemp, setTemp] = useState(temperature);
+  const [currentTemp, setTemperature] = useState(temperature);
+  const [isDemoMode, setIsDemoMode] = useState(false); // State to track demo mode
 
-  //use a useEffect to fetch info from individual APIs
   useEffect(() => {
-    //Mock function for daytime
     fetchDayTimeData();
   }, []);
 
   const fetchDayTimeData = async () => {
-    //Mock function api call (to replace later on)
     const dayTimeData = await fetchDayTimeFromAPI();
     setDayTime(dayTimeData.dayTime);
   };
 
-  const weatherIcon = getWeatherIcon(weather);
+  const handleWeatherUpdate = () => {
+    // Update the current weather when the button is clicked
+    if (isDemoMode) {
+      setCurrentWeather(inputWeather); // Set the selected weather from the dropdown
+      // You can set a fixed temperature for demo mode or retrieve it from weather conditions
+      const demoWeatherData = getWeatherData(inputWeather);
+      setTemperature(demoWeatherData.temperature);
+    } else {
+      // In live mode, you can decide whether to fetch the live data again if needed
+      // Here we're simply using the passed weather and temperature
+      setCurrentWeather(weather);
+      setTemperature(temperature);
+    }
+  };
+
+  const weatherIcon = getWeatherIcon(currentWeather); // Use currentWeather to get the icon
 
   return (
     <div className={`SidePanel`}>
-      <img src={weatherIcon} alt={weather} className="WeatherIcon" />
-      <label className="Temperature">{temperature}&deg;C</label>
+      <img src={weatherIcon} alt={currentWeather} className="WeatherIcon" />
+      <label className="Temperature">{currentTemp}&deg;C</label> {/* Use currentTemp */}
       <label className="Location">{location} </label>
       <label className="Day">{dayTime}</label>
       <div className="WeatherInfoFromAPI">
@@ -63,8 +80,56 @@ function TemperatureDisplayPanel({
           </div>
         ))}
       </div>
+
+      <h3>For Demo Purpose</h3>
+      <div className="WeatherUpdate">
+        <label>
+          <input
+            type="checkbox"
+            checked={isDemoMode}
+            onChange={(e) => setIsDemoMode(e.target.checked)} // Update demo mode state
+          />
+          Demo Mode
+        </label>
+        <select
+          value={inputWeather}
+          onChange={(e) => setInputWeather(e.target.value)} // Update state on dropdown change
+          className="WeatherDropdown"
+          disabled={!isDemoMode} // Disable dropdown if not in demo mode
+        >
+          <option value="Cloudy">Cloudy</option>
+          <option value="Partly Cloudy(Day)">Partly Cloudy (Day)</option>
+          <option value="Partly Cloudy(Night)">Partly Cloudy (Night)</option>
+          <option value="Fair(Day)">Fair (Day)</option>
+          <option value="Fair(Night)">Fair (Night)</option>
+          <option value="Fog">Fog</option>
+          <option value="Showers">Showers</option>
+          <option value="Thundery Showers">Thundery Showers</option>
+          <option value="Windy">Windy</option>
+        </select>
+        <button onClick={handleWeatherUpdate} className="WeatherUpdateButton">
+          Update Weather
+        </button>
+      </div>
     </div>
   );
+}
+
+// Function to get weather data for demo mode
+function getWeatherData(weather) {
+  const weatherConditions = {
+    Cloudy: { temperature: 25 },
+    "Partly Cloudy(Day)": { temperature: 28 },
+    "Partly Cloudy(Night)": { temperature: 20 },
+    "Fair(Day)": { temperature: 30 },
+    "Fair(Night)": { temperature: 22 },
+    Fog: { temperature: 18 },
+    Showers: { temperature: 24 },
+    "Thundery Showers": { temperature: 23 },
+    Windy: { temperature: 26 },
+  };
+
+  return weatherConditions[weather] || { temperature: 20 }; // Default temperature if not found
 }
 
 function getWeatherIcon(weather) {
@@ -115,7 +180,7 @@ function getWeatherIcon(weather) {
 async function fetchDayTimeFromAPI() {
   try {
     const response = await fetch(
-      "http://worldtimeapi.org/api/timezone/Europe/London"
+      "http://worldtimeapi.org/api/timezone/Asia/Singapore"
     ); // Example API endpoint
     const data = await response.json();
 
