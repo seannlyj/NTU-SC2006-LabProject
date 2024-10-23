@@ -216,6 +216,7 @@ const Landing = () => {
       geocode: activity.geocode,
       popUp: activity.name,
       description: activity.description,
+      rating: activity.rating,
       image: require("../../art/activity-thumbnails/indoor-yoga.jpg"), // Placeholder for activity image
       activity: activity.activity,
       indoorOutdoor: activity.indoorOutdoor,
@@ -441,6 +442,7 @@ async function fetchActivitiesFromAPI(lat, lon) {
       return {
         name: activity.name,
         description: activity.description,
+        rating: activity.rating,
         distance: distance,
         geocode: [parseFloat(activity.lat), parseFloat(activity.long)],
         activity: activity.sport, // Ensure activity.sport is included here
@@ -453,6 +455,7 @@ async function fetchActivitiesFromAPI(lat, lon) {
     const finalActivities = formattedActivities.map((activity) => ({
       name: activity.name,
       description: activity.description,
+      rating: activity.rating,
       distance: `${activity.distance.toFixed(2)} KM`,
       geocode: activity.geocode,
       activity: activity.activity,
