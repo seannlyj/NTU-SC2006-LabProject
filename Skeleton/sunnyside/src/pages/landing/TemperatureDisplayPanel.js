@@ -9,7 +9,7 @@ import showers from "../../art/weather-icons/showers.png";
 import thundery_showers from "../../art/weather-icons/thundery-showers.png";
 import windy from "../../art/weather-icons/windy.png";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 function TemperatureDisplayPanel({
   weather,
@@ -21,15 +21,35 @@ function TemperatureDisplayPanel({
   onActivityClick,
 }) {
   const [dayTime, setDayTime] = useState("FRIDAY, 00:00");
-  const [inputWeather, setInputWeather] = useState(weather); // Default value is the passed weather prop
-  const [currentWeather, setCurrentWeather] = useState(weather);
-  const [inputTemp, setTemp] = useState(temperature);
-  const [currentTemp, setTemperature] = useState(temperature);
-  const [isDemoMode, setIsDemoMode] = useState(false); // State to track demo mode
+  const [inputWeather, setInputWeather] = useState(weather); // Default weather input
+  const [currentWeather, setCurrentWeather] = useState(weather); // Current weather state
+  const [inputTemp, setTemp] = useState(temperature); // Default temperature input
+  const [currentTemp, setTemperature] = useState(temperature); // Current temperature state
+  const [isDemoMode, setIsDemoMode] = useState(false);
+
+  // Ref to keep track of the previous weather state
+  const prevWeatherRef = useRef(currentWeather);
 
   useEffect(() => {
     fetchDayTimeData();
-  }, []);
+    setCurrentWeather(weather);
+    setTemperature(temperature);
+  }, [weather, temperature]);
+
+  useEffect(() => {
+    // Check if the current weather is different from the previous weather
+    if (prevWeatherRef.current !== currentWeather) {
+      if (
+        currentWeather === "Showers" ||
+        currentWeather === "Fog" ||
+        currentWeather === "Thundery Showers"
+      ) {
+        alert(`⚠️ DANGER ALERT: Weather has changed to ${currentWeather}!`);
+      }
+    }
+    // Update the ref to the current weather
+    prevWeatherRef.current = currentWeather;
+  }, [currentWeather]);
 
   const fetchDayTimeData = async () => {
     const dayTimeData = await fetchDayTimeFromAPI();
@@ -37,26 +57,22 @@ function TemperatureDisplayPanel({
   };
 
   const handleWeatherUpdate = () => {
-    // Update the current weather when the button is clicked
     if (isDemoMode) {
-      setCurrentWeather(inputWeather); // Set the selected weather from the dropdown
-      // You can set a fixed temperature for demo mode or retrieve it from weather conditions
+      setCurrentWeather(inputWeather);
       const demoWeatherData = getWeatherData(inputWeather);
       setTemperature(demoWeatherData.temperature);
     } else {
-      // In live mode, you can decide whether to fetch the live data again if needed
-      // Here we're simply using the passed weather and temperature
       setCurrentWeather(weather);
       setTemperature(temperature);
     }
   };
 
-  const weatherIcon = getWeatherIcon(currentWeather); // Use currentWeather to get the icon
+  const weatherIcon = getWeatherIcon(currentWeather);
 
   return (
     <div className={`SidePanel`}>
       <img src={weatherIcon} alt={currentWeather} className="WeatherIcon" />
-      <label className="Temperature">{currentTemp}&deg;C</label> {/* Use currentTemp */}
+      <label className="Temperature">{currentTemp}&deg;C</label>
       <label className="Location">{location} </label>
       <label className="Day">{dayTime}</label>
       <div className="WeatherInfoFromAPI">
@@ -70,7 +86,7 @@ function TemperatureDisplayPanel({
           <div
             className="Activity"
             key={index}
-            onClick={() => onActivityClick(activity)} // Handle click
+            onClick={() => onActivityClick(activity)}
           >
             <div className="ActivityDetails">
               <h4>{activity.popUp}</h4>
@@ -87,15 +103,15 @@ function TemperatureDisplayPanel({
           <input
             type="checkbox"
             checked={isDemoMode}
-            onChange={(e) => setIsDemoMode(e.target.checked)} // Update demo mode state
+            onChange={(e) => setIsDemoMode(e.target.checked)}
           />
           Demo Mode
         </label>
         <select
           value={inputWeather}
-          onChange={(e) => setInputWeather(e.target.value)} // Update state on dropdown change
+          onChange={(e) => setInputWeather(e.target.value)}
           className="WeatherDropdown"
-          disabled={!isDemoMode} // Disable dropdown if not in demo mode
+          disabled={!isDemoMode}
         >
           <option value="Cloudy">Cloudy</option>
           <option value="Partly Cloudy(Day)">Partly Cloudy (Day)</option>
@@ -129,7 +145,7 @@ function getWeatherData(weather) {
     Windy: { temperature: 26 },
   };
 
-  return weatherConditions[weather] || { temperature: 20 }; // Default temperature if not found
+  return weatherConditions[weather] || { temperature: 20 };
 }
 
 function getWeatherIcon(weather) {
@@ -181,23 +197,22 @@ async function fetchDayTimeFromAPI() {
   try {
     const response = await fetch(
       "http://worldtimeapi.org/api/timezone/Asia/Singapore"
-    ); // Example API endpoint
+    );
     const data = await response.json();
 
-    // Extracting the current datetime and formatting it
     const currentDateTime = new Date(data.datetime);
     const day = currentDateTime
       .toLocaleDateString("en-GB", { weekday: "long" })
-      .toUpperCase(); // E.g., "FRIDAY"
+      .toUpperCase();
     const time = currentDateTime.toLocaleTimeString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
-    }); // E.g., "12:00"
+    });
 
     return { dayTime: `${day}, ${time}` };
   } catch (error) {
     console.error("Error fetching daytime:", error);
-    return { dayTime: "Error fetching time" }; // Return a fallback if there's an error
+    return { dayTime: "Error fetching time" };
   }
 }
 
