@@ -135,7 +135,10 @@ function SettingsPanel({
               </tr>
             </thead>
             <tbody>
-              {activities.map((activity, index) => (
+              {activities
+              .slice(-5) // display latest 5 activity
+              .reverse() // display latest loggedactivity at the top
+              .map((activity, index) => (
                 <tr key={index}>
                   <td>{activity.activityName}</td>
                   <td>{activity.date}</td>
