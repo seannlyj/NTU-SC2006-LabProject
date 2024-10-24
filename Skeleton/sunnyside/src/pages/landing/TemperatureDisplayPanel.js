@@ -10,6 +10,7 @@ import thundery_showers from "../../art/weather-icons/thundery-showers.png";
 import windy from "../../art/weather-icons/windy.png";
 
 import React, { useState, useEffect, useRef } from "react";
+import CustomModal from "./CustomModal";
 
 function TemperatureDisplayPanel({
   weather,
@@ -26,6 +27,8 @@ function TemperatureDisplayPanel({
   const [inputTemp, setTemp] = useState(temperature); // Default temperature input
   const [currentTemp, setTemperature] = useState(temperature); // Current temperature state
   const [isDemoMode, setIsDemoMode] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   // Ref to keep track of the previous weather state
   const prevWeatherRef = useRef(currentWeather);
@@ -44,7 +47,9 @@ function TemperatureDisplayPanel({
         currentWeather === "Fog" ||
         currentWeather === "Thundery Showers"
       ) {
-        alert(`⚠️ DANGER ALERT: Weather has changed to ${currentWeather}!`);
+        //alert(`⚠️ DANGER ALERT: Weather has changed to ${currentWeather}!`);      
+        setModalMessage(`⚠️ DANGER ALERT: Weather has changed to ${currentWeather}!`);
+        setIsModalOpen(true);
       }
     }
     // Update the ref to the current weather
@@ -127,6 +132,13 @@ function TemperatureDisplayPanel({
           Update Weather
         </button>
       </div>
+
+      <CustomModal
+      isOpen={isModalOpen}
+      message={modalMessage}
+      onClose={() => setIsModalOpen(false)}
+      backgroundColor="#e18c2e"
+    />
     </div>
   );
 }

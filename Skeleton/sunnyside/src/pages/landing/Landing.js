@@ -9,6 +9,7 @@ import { getRecommendedActivities } from "./ActivityRecommendation.js";
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom"; // Import useLocation to get passed email
 import axios from "axios";
+import logo from "../../art/sunnysidelogo.PNG";
 
 /*const Landing = () => {
   // Extract email from useLocation
@@ -20,47 +21,6 @@ const Landing = () => {
   // Extract email from useLocation
   const locationState = useLocation();
   const { email } = locationState.state;
-
-  //FOR TESTING, TO REMOVE AFTER DONE TESTING RECOMMENDED ACTIVITIES
-  /*
-  const defaultMarkers = [
-    {
-      geocode: [1.3521, 103.8198],
-      popUp: "Gym",
-      description:
-        "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
-      image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
-      activity: "Martial Arts", // Specify activity type
-      indoorOutdoor: "outdoor", // Specify whether it's indoors or outdoors
-    },
-    {
-      geocode: [1.3531, 103.8199],
-      popUp: "Indoor Yoga",
-      description:
-        "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
-      image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
-      activity: "Yoga", // Specify activity type
-      indoorOutdoor: "indoor", // Specify whether it's indoors or outdoors
-    },
-    {
-      geocode: [1.3541, 103.82],
-      popUp: "Boxing Gym",
-      description:
-        "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
-      image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
-      activity: "Martial Arts", // Specify activity type
-      indoorOutdoor: "indoor", // Specify whether it's indoors or outdoors
-    },
-    {
-      geocode: [1.3551, 103.8201],
-      popUp: "Swimming Pool",
-      description:
-        "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
-      image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
-      activity: "Swimming", // Specify activity type
-      indoorOutdoor: "outdoor", // Specify whether it's indoors or outdoors
-    },
-  ]; */
 
   const [markers, setMarkers] = useState([]);
 
@@ -104,6 +64,9 @@ const Landing = () => {
   const [longitude, setLongitude] = useState(null);
   const [geoError, setGeoError] = useState(null); // To store geolocation errors
 
+  // Loading screen variables
+  const [isLoading, setIsLoading] = useState(true);
+
   // useEffect to get user's geolocation
   useEffect(() => {
     if (navigator.geolocation) {
@@ -139,12 +102,26 @@ const Landing = () => {
   }, [activities, weather, preferences, markers]);
 
   // useEffect to fetch data after getting latitude and longitude
-  useEffect(() => {
+  /*useEffect(() => {
     if (latitude !== null && longitude !== null) {
       // Fetch weather, location, and nearby activities when location is available
       fetchWeatherData(latitude, longitude);
       fetchLocationData(latitude, longitude);
       fetchNearbyActivities(latitude, longitude);
+    }
+  }, [latitude, longitude]);*/
+
+  useEffect(() => {
+    if (latitude !== null && longitude !== null) {
+      const fetchData = async () => {
+        setIsLoading(true); // Start loading
+        await fetchWeatherData(latitude, longitude);
+        await fetchLocationData(latitude, longitude);
+        await fetchNearbyActivities(latitude, longitude);
+        setIsLoading(false); // End loading
+      };
+
+      fetchData();
     }
   }, [latitude, longitude]);
 
@@ -228,8 +205,17 @@ const Landing = () => {
     setSelectedActivity(activity);
   };
 
+  const LoadingScreen = () => (
+    <div className="loading-screen">
+      <img src={logo} alt="SunnySide Logo" className="loading-image" />
+      <p className="loading-text">Loading...</p>
+    </div>
+  );
+
   return (
     <div className="Landing">
+      {isLoading ? ( <LoadingScreen /> ) : (
+        <>
       <div className="header">
         <ProfileButton toggleSettingsPanel={toggleSettingsPanel} />
         <HintPanel weather={weather} />
@@ -275,6 +261,8 @@ const Landing = () => {
           email={email}
         />
       </div>
+      </>
+      )}
     </div>
   );
 };

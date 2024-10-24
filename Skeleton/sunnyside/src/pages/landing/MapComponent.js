@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import "../../styling/MapComponent.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import axios from "axios";
+import CustomModal from "./CustomModal";
 
 const MapComponent = ({ selectedActivity, markerData , email, latitude, longitude }) => {
   // Pinned locations should be passed as an array
@@ -51,6 +52,8 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
   const [newRating, setNewRating] = useState("");
   const [lat, setLat] = useState("");
   const [long, setLong] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   useEffect(() => {
     if (markerData) {
@@ -62,7 +65,7 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
   const iconHeight = 100;
   // Creating icons for indoor and outdoor activities
   const customIcon = new Icon({
-    iconUrl: require("../../art/location-icons/location.png"),
+    iconUrl: require("../../art/location-icons/user_marker.png"),
     iconSize: [60, 60], // Size of the icon
   });
 
@@ -221,7 +224,9 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
       date: formattedDate,
       time: currentDate.toLocaleTimeString(),
     };
-    alert(`Logged activity: ${location}`);
+    //alert(`Logged activity: ${location}`);
+    setModalMessage(`Logged activity: ${location}`);
+    setIsModalOpen(true);
     console.log(loggedActivity);
     
     try {
@@ -274,6 +279,8 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
     try {
 
       const response = await axios.patch('/api/activities/', data);
+      setModalMessage("Rating submitted for activity");
+      setIsModalOpen(true);
 
     } catch (error) {
       const message = error.response?.data?.message || 'Error. Please try again';
