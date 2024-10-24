@@ -114,7 +114,7 @@ function ChangePW({ isOpen, onClose, userEmail}) {
             />
           </div>
           <button type="submit" className="changePasswordButton">
-            Change password
+            Change Password
           </button>
         </form>
         </>

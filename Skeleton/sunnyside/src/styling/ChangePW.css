@@ -57,6 +57,8 @@
     width: 100%;
     cursor: pointer;
     border-radius: 30px;
+    font-weight: bold;
+    color: white;
   }
 
 
