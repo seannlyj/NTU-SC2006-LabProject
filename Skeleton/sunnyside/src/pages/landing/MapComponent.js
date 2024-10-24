@@ -33,7 +33,7 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
       popUp: "Boxing Gym",
       description:
         "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
-      image: require("../../art/activity-thumbnails/indoor-martialarts.jpg"),
+      image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
       activity: "Martial Arts", // Specify activity type
       indoorOutdoor: "indoor", // Specify whether it's indoors or outdoors
     },
@@ -42,7 +42,7 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
       popUp: "Swimming Pool",
       description:
         "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
-      image: require("../../art/activity-thumbnails/outdoor-swimming.jpg"),
+      image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
       activity: "Swimming", // Specify activity type
       indoorOutdoor: "outdoor", // Specify whether it's indoors or outdoors
     },
@@ -224,9 +224,10 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
       date: formattedDate,
       time: currentDate.toLocaleTimeString(),
     };
-    //alert(`Logged activity: ${location}`);
-    setModalMessage(`Logged activity: ${location}`);
-    setIsModalOpen(true);
+
+    //setModalMessage(`⚠️ DANGER ALERT: Weather has changed to ${currentWeather}!`);
+    //setIsModalOpen(true);
+    alert(`Logged activity: ${location}`);
     console.log(loggedActivity);
     
     try {
@@ -279,8 +280,6 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
     try {
 
       const response = await axios.patch('/api/activities/', data);
-      setModalMessage("Rating submitted for activity");
-      setIsModalOpen(true);
 
     } catch (error) {
       const message = error.response?.data?.message || 'Error. Please try again';
@@ -343,7 +342,7 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
                     Rate the activity!<br></br>(1-Horrible, 5-Amazing)
                   </p>
                   <div className="rating-slider">
-                    <label>Your Previous Rating: {marker.rating}</label>
+                    <label>Rating: {marker.rating}</label>
                     <input
                       type="range"
                       min="1"
