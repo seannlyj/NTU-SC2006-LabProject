@@ -282,6 +282,7 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
 
   }
 
+
   return (
     <MapContainer
       center={[1.3521, 103.8198]}
