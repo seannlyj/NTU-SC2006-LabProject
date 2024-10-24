@@ -9,7 +9,7 @@ import showers from "../../art/weather-icons/showers.png";
 import thundery_showers from "../../art/weather-icons/thundery-showers.png";
 import windy from "../../art/weather-icons/windy.png";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 function TemperatureDisplayPanel({
   weather,
@@ -21,25 +21,58 @@ function TemperatureDisplayPanel({
   onActivityClick,
 }) {
   const [dayTime, setDayTime] = useState("FRIDAY, 00:00");
+  const [inputWeather, setInputWeather] = useState(weather); // Default weather input
+  const [currentWeather, setCurrentWeather] = useState(weather); // Current weather state
+  const [inputTemp, setTemp] = useState(temperature); // Default temperature input
+  const [currentTemp, setTemperature] = useState(temperature); // Current temperature state
+  const [isDemoMode, setIsDemoMode] = useState(false);
 
-  //use a useEffect to fetch info from individual APIs
+  // Ref to keep track of the previous weather state
+  const prevWeatherRef = useRef(currentWeather);
+
   useEffect(() => {
-    //Mock function for daytime
     fetchDayTimeData();
-  }, []);
+    setCurrentWeather(weather);
+    setTemperature(temperature);
+  }, [weather, temperature]);
+
+  useEffect(() => {
+    // Check if the current weather is different from the previous weather
+    if (prevWeatherRef.current !== currentWeather) {
+      if (
+        currentWeather === "Showers" ||
+        currentWeather === "Fog" ||
+        currentWeather === "Thundery Showers"
+      ) {
+        alert(`⚠️ DANGER ALERT: Weather has changed to ${currentWeather}!`);
+      }
+    }
+    // Update the ref to the current weather
+    prevWeatherRef.current = currentWeather;
+  }, [currentWeather]);
 
   const fetchDayTimeData = async () => {
-    //Mock function api call (to replace later on)
     const dayTimeData = await fetchDayTimeFromAPI();
     setDayTime(dayTimeData.dayTime);
   };
 
-  const weatherIcon = getWeatherIcon(weather);
+  const handleWeatherUpdate = () => {
+    if (isDemoMode) {
+      setCurrentWeather(inputWeather);
+      const demoWeatherData = getWeatherData(inputWeather);
+      setTemperature(demoWeatherData.temperature);
+    } else {
+      setCurrentWeather(weather);
+      setTemperature(temperature);
+    }
+  };
+
+  const weatherIcon = getWeatherIcon(currentWeather);
 
   return (
     <div className={`SidePanel`}>
-      <img src={weatherIcon} alt={weather} className="WeatherIcon" />
-      <label className="Temperature">{temperature}&deg;C</label>
+      <img src={weatherIcon} alt={currentWeather} className="WeatherIcon" />
+      <label className="Temperature">{currentTemp}&deg;C</label>
       <label className="Location">{location} </label>
       <label className="Day">{dayTime}</label>
       <div className="WeatherInfoFromAPI">
@@ -53,7 +86,7 @@ function TemperatureDisplayPanel({
           <div
             className="Activity"
             key={index}
-            onClick={() => onActivityClick(activity)} // Handle click
+            onClick={() => onActivityClick(activity)}
           >
             <div className="ActivityDetails">
               <h4>{activity.popUp}</h4>
@@ -63,8 +96,56 @@ function TemperatureDisplayPanel({
           </div>
         ))}
       </div>
+
+      <h3>For Demo Purpose</h3>
+      <div className="WeatherUpdate">
+        <label>
+          <input
+            type="checkbox"
+            checked={isDemoMode}
+            onChange={(e) => setIsDemoMode(e.target.checked)}
+          />
+          Demo Mode
+        </label>
+        <select
+          value={inputWeather}
+          onChange={(e) => setInputWeather(e.target.value)}
+          className="WeatherDropdown"
+          disabled={!isDemoMode}
+        >
+          <option value="Cloudy">Cloudy</option>
+          <option value="Partly Cloudy(Day)">Partly Cloudy (Day)</option>
+          <option value="Partly Cloudy(Night)">Partly Cloudy (Night)</option>
+          <option value="Fair(Day)">Fair (Day)</option>
+          <option value="Fair(Night)">Fair (Night)</option>
+          <option value="Fog">Fog</option>
+          <option value="Showers">Showers</option>
+          <option value="Thundery Showers">Thundery Showers</option>
+          <option value="Windy">Windy</option>
+        </select>
+        <button onClick={handleWeatherUpdate} className="WeatherUpdateButton">
+          Update Weather
+        </button>
+      </div>
     </div>
   );
+}
+
+// Function to get weather data for demo mode
+function getWeatherData(weather) {
+  const weatherConditions = {
+    Cloudy: { temperature: 25 },
+    "Partly Cloudy(Day)": { temperature: 28 },
+    "Partly Cloudy(Night)": { temperature: 20 },
+    "Fair(Day)": { temperature: 30 },
+    "Fair(Night)": { temperature: 22 },
+    Fog: { temperature: 18 },
+    Showers: { temperature: 24 },
+    "Thundery Showers": { temperature: 23 },
+    Windy: { temperature: 26 },
+  };
+
+  return weatherConditions[weather] || { temperature: 20 };
 }
 
 function getWeatherIcon(weather) {
@@ -115,24 +196,23 @@ function getWeatherIcon(weather) {
 async function fetchDayTimeFromAPI() {
   try {
     const response = await fetch(
-      "http://worldtimeapi.org/api/timezone/Europe/London"
-    ); // Example API endpoint
+      "http://worldtimeapi.org/api/timezone/Asia/Singapore"
+    );
     const data = await response.json();
 
-    // Extracting the current datetime and formatting it
     const currentDateTime = new Date(data.datetime);
     const day = currentDateTime
       .toLocaleDateString("en-GB", { weekday: "long" })
-      .toUpperCase(); // E.g., "FRIDAY"
+      .toUpperCase();
     const time = currentDateTime.toLocaleTimeString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
-    }); // E.g., "12:00"
+    });
 
     return { dayTime: `${day}, ${time}` };
   } catch (error) {
     console.error("Error fetching daytime:", error);
-    return { dayTime: "Error fetching time" }; // Return a fallback if there's an error
+    return { dayTime: "Error fetching time" };
   }
 }
 

@@ -240,6 +240,8 @@ const Landing = () => {
             selectedActivity={selectedActivity}
             markerData={recommendedActivities} // Pass recommended activities as markerData
             email={email}
+            latitude={latitude}
+            longitude={longitude}
           />
         </div>
         <TemperatureDisplayPanel

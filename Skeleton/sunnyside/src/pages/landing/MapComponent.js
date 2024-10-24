@@ -6,7 +6,7 @@ import "../../styling/MapComponent.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import axios from "axios";
 
-const MapComponent = ({ selectedActivity, markerData , email }) => {
+const MapComponent = ({ selectedActivity, markerData , email, latitude, longitude }) => {
   // Pinned locations should be passed as an array
   const defaultMarkers = [
     {
@@ -63,7 +63,7 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
   // Creating icons for indoor and outdoor activities
   const customIcon = new Icon({
     iconUrl: require("../../art/location-icons/location.png"),
-    iconSize: [iconWidth, iconHeight], // Size of the icon
+    iconSize: [60, 60], // Size of the icon
   });
 
   const basketBallInIcon = new Icon({
@@ -283,6 +283,18 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
   }
 
 
+  const CenterMapOnCurrentLocation = () => {
+    const map = useMap(); // Get the map instance
+
+    useEffect(() => {
+      if (latitude && longitude) {
+        map.setView([latitude, longitude], 13); // Set the view to the current location with zoom level 13
+      }
+    }, [latitude, longitude, map]);
+
+    return null;
+  };
+
   return (
     <MapContainer
       center={[1.3521, 103.8198]}
@@ -359,6 +371,15 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
           </Marker>
         ))}
       </MarkerClusterGroup>
+
+      {/* Add marker to indicate user's position */}
+      {latitude && longitude && (
+        <Marker position={[latitude, longitude]} icon={customIcon}>
+          <Popup>Your Current Location</Popup>
+        </Marker>
+      )}
+
+      <CenterMapOnCurrentLocation />
       {/* Add custom zoom control to bottom left */}
       <CustomZoomControl />
     </MapContainer>
