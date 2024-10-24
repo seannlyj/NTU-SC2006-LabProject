@@ -32,7 +32,7 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
       popUp: "Boxing Gym",
       description:
         "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
-      image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
+      image: require("../../art/activity-thumbnails/indoor-martialarts.jpg"),
       activity: "Martial Arts", // Specify activity type
       indoorOutdoor: "indoor", // Specify whether it's indoors or outdoors
     },
@@ -41,7 +41,7 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
       popUp: "Swimming Pool",
       description:
         "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
-      image: require("../../art/activity-thumbnails/indoor-yoga.jpg"),
+      image: require("../../art/activity-thumbnails/outdoor-swimming.jpg"),
       activity: "Swimming", // Specify activity type
       indoorOutdoor: "outdoor", // Specify whether it's indoors or outdoors
     },
@@ -324,7 +324,7 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
                     Rate the activity!<br></br>(1-Horrible, 5-Amazing)
                   </p>
                   <div className="rating-slider">
-                    <label>Rating: {marker.rating}</label>
+                    <label>Your Previous Rating: {marker.rating}</label>
                     <input
                       type="range"
                       min="1"

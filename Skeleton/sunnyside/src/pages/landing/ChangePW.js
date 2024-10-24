@@ -11,12 +11,27 @@ function ChangePW({ isOpen, onClose, userEmail}) {
   const [pwChangeSuccessful, setPwChangeSuccessful] = useState(null); // neutral state so idh to create new state
 
   const handleClose = () => {   
-    //reset the states once password is changed so it doesnt get stuck on successful
-    onClose();
-    setNewPassword("");
-    setConfirmPassword("");
-    setPwChangeSuccessful(null);
-    setPasswordMismatch(false);
+    const panel = document.querySelector(".resetPasswordPanel");
+    const content = document.querySelector(".resetPasswordContent");
+
+    if (panel && content) {
+      panel.classList.add("fadeOut");
+      content.classList.add("tween-ease-out");
+
+      setTimeout(() => {
+        onClose();
+        setNewPassword("");
+        setConfirmPassword("");
+        setPwChangeSuccessful(null);
+        setPasswordMismatch(false);
+      }, 400); // Match the duration of the animation
+    } else {
+      onClose();
+      setNewPassword("");
+      setConfirmPassword("");
+      setPwChangeSuccessful(null);
+      setPasswordMismatch(false);
+    }
   };
 
   const handleSubmit = async (e) => {

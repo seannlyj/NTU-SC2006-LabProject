@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../styling/SettingsPanel.css";
+import CustomModal from "./CustomModal";
 
 function SettingsPanel({
   isOpen,
@@ -23,6 +24,8 @@ function SettingsPanel({
 
   // State to hold user's preferences
   const [userPreferences, setUserPreferences] = useState([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
 
   // Function to fetch user's details from the database
   const fetchUserDetails = async () => {
@@ -73,6 +76,15 @@ function SettingsPanel({
     // Here you could pass the preference to the EditProfilePanel if needed
     console.log("Clicked preference:", preference); // Log the clicked preference
     handleEditProfile(); // Call the edit profile handler
+  };
+
+  const handleLogout = () => {
+    setIsModalOpen(true); // Open the modal
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    navigate("/login"); // Navigate to login after closing the modal
   };
 
   return (
@@ -148,18 +160,18 @@ function SettingsPanel({
             </tbody>
           </table>
 
-          <button
-            className="LogoutButton"
-            onClick={() => {
-              alert("Logged out");
-              navigate("/login");
-            }}
-          >
+          <button className="LogoutButton" onClick={handleLogout}>
             <span className="material-icons">logout</span>
             Log out
           </button>
         </div>
       </div>
+
+      <CustomModal
+        isOpen={isModalOpen}
+        message="You've been logged out. See you again!"
+        onClose={closeModal}
+      />
     </div>
   );
 }
