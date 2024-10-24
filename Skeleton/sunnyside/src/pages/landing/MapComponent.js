@@ -65,7 +65,7 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
   const iconHeight = 100;
   // Creating icons for indoor and outdoor activities
   const customIcon = new Icon({
-    iconUrl: require("../../art/location-icons/user_marker.png"),
+    iconUrl: require("../../art/location-icons/user_marker.PNG"),
     iconSize: [60, 60], // Size of the icon
   });
 
