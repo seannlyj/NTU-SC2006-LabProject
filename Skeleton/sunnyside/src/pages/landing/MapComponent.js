@@ -267,7 +267,7 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
   const handleRating = async(e) => {
     // e.preventDefault(); // Prevent default form submission
 
-    const data = {lat:"1.3415", long:"103.676", rating:newRating};
+    const data = {lat: lat, long:long, rating:newRating};
 
     console.log("Entered location is", data);
 
@@ -324,7 +324,7 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
                     Rate the activity!<br></br>(1-Horrible, 5-Amazing)
                   </p>
                   <div className="rating-slider">
-                    <label>{marker.rating}</label>
+                    <label>Rating: {marker.rating}</label>
                     <input
                       type="range"
                       min="1"
