@@ -9,6 +9,7 @@ function ChangePW({ isOpen, onClose, userEmail}) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [pwChangeSuccessful, setPwChangeSuccessful] = useState(null); // neutral state so idh to create new state
+  const [passwordError, setPasswordError] = useState(false); // New state for password complexity error
 
   const handleClose = () => {   
     //reset the states once password is changed so it doesnt get stuck on successful
@@ -17,6 +18,14 @@ function ChangePW({ isOpen, onClose, userEmail}) {
     setConfirmPassword("");
     setPwChangeSuccessful(null);
     setPasswordMismatch(false);
+    setPasswordError(false); // Reset password error state
+  };
+
+  const isPasswordValid = (password) => {
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    return hasUpperCase && hasLowerCase && hasSymbol;
   };
 
   const handleSubmit = async (e) => {
@@ -25,8 +34,15 @@ function ChangePW({ isOpen, onClose, userEmail}) {
     if (newPassword !== confirmPassword) {
         console.log("Passwords do not match"); 
         setPasswordMismatch(true);
-     
+
       return;
+    }
+
+    if (!isPasswordValid(newPassword)) {
+      setPasswordError(true);// Set error state to true if password is invalid
+      return;
+    } else {
+      setPasswordError(false); // Clear the error if the password is valid
     }
 
     setPasswordMismatch(false);
@@ -91,6 +107,12 @@ function ChangePW({ isOpen, onClose, userEmail}) {
             <p className="mismatchMessage">Password doesn't match</p>
         </div>
         )}
+
+        {passwordError && (//NEW - Formatting for password validation
+              <div className="mismatchError">
+                <p className="mismatchMessage">Password must contain at least one uppercase letter, one lowercase letter, and one symbol.</p>
+              </div>
+            )}
 
         <form onSubmit={handleSubmit}>
           <div className="textBox">

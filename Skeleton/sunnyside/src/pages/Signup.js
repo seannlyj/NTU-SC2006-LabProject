@@ -11,6 +11,7 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [passwordError, setPasswordError] = useState(""); //NEW - state for dynamic password error
   const [fadeOut, setFadeOut] = useState(false);
 
   const navigate = useNavigate();
@@ -33,6 +34,28 @@ const SignUp = () => {
     setFadeOut(true);
     setTimeout(() => navigate("/login"), 500); // Wait for the animation to complete
   };
+  
+  // Function to check if password meets the requirements - NEW
+  const validatePassword = (password) => {
+    const hasUpperCase = /[A-Z]/.test(password); // Check for uppercase letter //added
+    const hasLowerCase = /[a-z]/.test(password); // Check for lowercase letter //added
+    const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password); // Check for symbol //added
+    return hasUpperCase && hasLowerCase && hasSymbol; //added
+  };
+
+  const handlePasswordChange = (e) => {//NEW!!!
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+
+    // Check password validity as user types
+    if (!validatePassword(newPassword)) {
+      setPasswordError(
+        "Your password must contain at least one uppercase letter, one lowercase letter, and one symbol."
+      ); //new
+    } else {
+      setPasswordError(""); // Clear error message if valid //new
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
@@ -42,12 +65,17 @@ const SignUp = () => {
     console.log(`Entered password: ${[password]}`);
     console.log(`Entered confirm password: ${confirmPassword}`);
 
+    
     // Check if passwords match
     if (password !== confirmPassword) {
       setErrorMessage("Passwords do not match.");
       return;
     }
-
+    // Check if the password meets the requirements //added - NEW
+    if (!validatePassword(password)) {
+      setErrorMessage("Password must contain at least one uppercase letter, one lowercase letter, and one symbol."); //added
+      return; //added
+    }
     try {
       // Send signup request to the backend
       const data = {
@@ -80,7 +108,9 @@ const SignUp = () => {
       </div>
       <div className={`SignupForm ${fadeOut ? "fade-out" : ""}`}>
         <h1>Create Account</h1>
-        {errorMessage && <div className="error">{errorMessage}</div>}{" "}
+        
+        {errorMessage && <div className="error">{errorMessage}</div>} 
+        {passwordError && <div className="error">{passwordError}</div>} {/* Display password error message if exists // ADDED */}
         {/* Display error message if exists */}
         <form onSubmit={handleSubmit}>
           {" "}
@@ -128,7 +158,7 @@ const SignUp = () => {
                 id="password"
                 name="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange} //new change - handle input change for dynamic error
                 required
               />
             </div>
