@@ -198,6 +198,49 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
     });
   };
 
+  const getActivityImage = (activity, indoorOutdoor) => {
+    switch (activity) {
+      case "Basketball":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-basketball.jpg")
+          : require("../../art/activity-thumbnails/outdoor-basketball.jpg");
+      case "Bouldering":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-bouldering.jpg")
+          : require("../../art/activity-thumbnails/outdoor-bouldering.jpg");
+      case "Cycling":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-cycling.jpg")
+          : require("../../art/activity-thumbnails/outdoor-cycling.jpg");
+      case "Hiking":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-hiking.jpg")
+          : require("../../art/activity-thumbnails/outdoor-hiking.jpg");
+      case "Martial Arts":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-martialarts.jpg")
+          : require("../../art/activity-thumbnails/outdoor-martialarts.jpg");
+      case "Running":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-running.jpg")
+          : require("../../art/activity-thumbnails/outdoor-running.jpg");
+      case "Soccer":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-soccer.jpg")
+          : require("../../art/activity-thumbnails/outdoor-soccer.jpg");
+      case "Swimming":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-swimming.jpg")
+          : require("../../art/activity-thumbnails/outdoor-swimming.jpg");
+      case "Yoga":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-yoga.jpg")
+          : require("../../art/activity-thumbnails/outdoor-yoga.jpg");
+      default:
+        return require("../../art/activity-thumbnails/indoor-yoga.jpg");
+    }
+  };
+
   const zoomControlRef = useRef(null); // Ref to hold the zoom control
 
   // Function to handle register button click (added logging of activity)
@@ -323,7 +366,7 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
             <Popup>
               <div className="popup-content">
                 <img
-                  src={marker.image}
+                  src={getActivityImage(marker.activity, marker.indoorOutdoor)}
                   alt={marker.popUp}
                   className="popup-image"
                 />
