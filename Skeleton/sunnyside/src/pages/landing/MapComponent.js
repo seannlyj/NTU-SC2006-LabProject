@@ -54,6 +54,7 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
   const [long, setLong] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [hasZoomed, setHasZoomed] = useState(false);
 
   useEffect(() => {
     if (markerData) {
@@ -336,13 +337,15 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
     const map = useMap(); // Get the map instance
 
     useEffect(() => {
-      if (latitude && longitude) {
+      if (!hasZoomed && latitude && longitude) {
         map.setView([latitude, longitude], 13); // Set the view to the current location with zoom level 13
+        setHasZoomed(true); // Mark that the zooming has occurred
       }
-    }, [latitude, longitude, map]);
+    }, [latitude, longitude, map, hasZoomed]);
 
     return null;
   };
+  
 
   return (
     <MapContainer
@@ -397,6 +400,10 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
                         setLat(marker.geocode[0].toString());
                         setLong(marker.geocode[1].toString());
                         setNewRating(e.target.value);
+                        setMarkers((prevMarkers) =>
+                          prevMarkers.map((m) =>
+                            m.popUp === marker.popUp ? { ...m, rating: e.target.value } : m
+                          ));
                         }
                       }
                     />
