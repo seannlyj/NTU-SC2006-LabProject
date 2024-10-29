@@ -102,9 +102,7 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <div className="forgot-password">
-              <a href="/forgot-password">Forgot Password?</a>
-            </div>
+
           </div>
           <div>
             <button type="submit">Log In</button>

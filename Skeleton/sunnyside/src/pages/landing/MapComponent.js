@@ -5,8 +5,9 @@ import "leaflet/dist/leaflet.css";
 import "../../styling/MapComponent.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import axios from "axios";
+import CustomModal from "./CustomModal";
 
-const MapComponent = ({ selectedActivity, markerData , email }) => {
+const MapComponent = ({ selectedActivity, markerData , email, latitude, longitude }) => {
   // Pinned locations should be passed as an array
   const defaultMarkers = [
     {
@@ -48,9 +49,14 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
   ];
 
   const [markers, setMarkers] = useState(markerData || defaultMarkers);
-  const [newRating, setNewRating] = useState("");
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [isInteractingWithMarker, setIsInteractingWithMarker] = useState(false);
+  const [newRating, setNewRating] = useState(null);
   const [lat, setLat] = useState("");
   const [long, setLong] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [hasZoomed, setHasZoomed] = useState(false);
 
   useEffect(() => {
     if (markerData) {
@@ -58,12 +64,20 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
     }
   }, [markerData]);
 
+  useEffect(() => {
+    if (selectedMarker) {
+      setLat(selectedMarker.geocode[0].toString());
+      setLong(selectedMarker.geocode[1].toString());
+      setNewRating(selectedMarker.rating);
+    }
+  }, [selectedMarker]);
+
   const iconWidth = 100;
   const iconHeight = 100;
   // Creating icons for indoor and outdoor activities
   const customIcon = new Icon({
-    iconUrl: require("../../art/location-icons/location.png"),
-    iconSize: [iconWidth, iconHeight], // Size of the icon
+    iconUrl: require("../../art/location-icons/user_marker.PNG"),
+    iconSize: [60, 60], // Size of the icon
   });
 
   const basketBallInIcon = new Icon({
@@ -195,6 +209,49 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
     });
   };
 
+  const getActivityImage = (activity, indoorOutdoor) => {
+    switch (activity) {
+      case "Basketball":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-basketball.jpg")
+          : require("../../art/activity-thumbnails/outdoor-basketball.jpg");
+      case "Bouldering":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-bouldering.jpg")
+          : require("../../art/activity-thumbnails/outdoor-bouldering.jpg");
+      case "Cycling":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-cycling.jpg")
+          : require("../../art/activity-thumbnails/outdoor-cycling.jpg");
+      case "Hiking":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-hiking.jpg")
+          : require("../../art/activity-thumbnails/outdoor-hiking.jpg");
+      case "Martial Arts":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-martialarts.jpg")
+          : require("../../art/activity-thumbnails/outdoor-martialarts.jpg");
+      case "Running":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-running.jpg")
+          : require("../../art/activity-thumbnails/outdoor-running.jpg");
+      case "Soccer":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-soccer.jpg")
+          : require("../../art/activity-thumbnails/outdoor-soccer.jpg");
+      case "Swimming":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-swimming.jpg")
+          : require("../../art/activity-thumbnails/outdoor-swimming.jpg");
+      case "Yoga":
+        return indoorOutdoor === "indoor"
+          ? require("../../art/activity-thumbnails/indoor-yoga.jpg")
+          : require("../../art/activity-thumbnails/outdoor-yoga.jpg");
+      default:
+        return require("../../art/activity-thumbnails/indoor-yoga.jpg");
+    }
+  };
+
   const zoomControlRef = useRef(null); // Ref to hold the zoom control
 
   // Function to handle register button click (added logging of activity)
@@ -221,6 +278,9 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
       date: formattedDate,
       time: currentDate.toLocaleTimeString(),
     };
+
+    //setModalMessage(`⚠️ DANGER ALERT: Weather has changed to ${currentWeather}!`);
+    //setIsModalOpen(true);
     alert(`Logged activity: ${location}`);
     console.log(loggedActivity);
     
@@ -267,13 +327,14 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
   const handleRating = async(e) => {
     // e.preventDefault(); // Prevent default form submission
 
-    const data = {lat:"1.3415", long:"103.676", rating:newRating};
+    const data = {lat: lat, long:long, rating:newRating};
 
     console.log("Entered location is", data);
 
     try {
 
       const response = await axios.patch('/api/activities/', data);
+      setNewRating(null); // reset rating value
 
     } catch (error) {
       const message = error.response?.data?.message || 'Error. Please try again';
@@ -281,6 +342,21 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
     }
 
   }
+
+
+  const CenterMapOnCurrentLocation = () => {
+    const map = useMap(); // Get the map instance
+
+    useEffect(() => {
+      if (!hasZoomed && latitude && longitude) {
+        map.setView([latitude, longitude], 13); // Set the view to the current location with zoom level 13
+        setHasZoomed(true); // Mark that the zooming has occurred
+      }
+    }, [latitude, longitude, map, hasZoomed]);
+
+    return null;
+  };
+  
 
   return (
     <MapContainer
@@ -300,11 +376,18 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
             key={marker.popUp} // Unique key for each marker
             position={marker.geocode}
             icon={getActivityIcon(marker.activity, marker.indoorOutdoor)}
+
+            eventHandlers={{
+              click: () => {
+                setSelectedMarker(marker);
+                setIsInteractingWithMarker(true); // Set this to true when a marker is clicked
+              }
+            }}
           >
             <Popup>
               <div className="popup-content">
                 <img
-                  src={marker.image}
+                  src={getActivityImage(marker.activity, marker.indoorOutdoor)}
                   alt={marker.popUp}
                   className="popup-image"
                 />
@@ -323,7 +406,7 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
                     Rate the activity!<br></br>(1-Horrible, 5-Amazing)
                   </p>
                   <div className="rating-slider">
-                    <label>{marker.rating}</label>
+                    <label>Rating: {marker.rating}</label>
                     <input
                       type="range"
                       min="1"
@@ -332,11 +415,17 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
                       defaultValue={marker.rating}
                       onChange={(e) => {
                         console.log(`New rating for ${marker.popUp}: ${e.target.value}`)
-                        setLat(marker.geocode[0].toString());
-                        setLong(marker.geocode[1].toString());
                         setNewRating(e.target.value);
+                        setMarkers((prevMarkers) =>
+                          prevMarkers.map((m) =>
+                            m.popUp === marker.popUp ? { ...m, rating: e.target.value } : m
+                          )); 
                         }
                       }
+                      
+                        onMouseEnter={() => setSelectedMarker(marker)} // Set selected marker when hovering
+                        onMouseLeave={() => setSelectedMarker(null)} // Reset when not hovering
+
                     />
                     <div className="rating-labels">
                       <span>1</span>
@@ -348,7 +437,14 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
                   </div>
                   <button
                     className="rating-button"
-                    onClick={() => handleRating()}
+                    onClick={() => {
+                      setLat(marker.geocode[0].toString());
+                      setLong(marker.geocode[1].toString());
+                      setNewRating(newRating || marker.rating);
+
+                      handleRating()
+                      setIsInteractingWithMarker(false); // Reset this after rating is submitted
+                    }}
                   >
                     Rate Activity
                   </button>
@@ -358,6 +454,15 @@ const MapComponent = ({ selectedActivity, markerData , email }) => {
           </Marker>
         ))}
       </MarkerClusterGroup>
+
+      {/* Add marker to indicate user's position */}
+      {latitude && longitude && (
+        <Marker position={[latitude, longitude]} icon={customIcon}>
+          <Popup>Your Current Location</Popup>
+        </Marker>
+      )}
+
+      <CenterMapOnCurrentLocation />
       {/* Add custom zoom control to bottom left */}
       <CustomZoomControl />
     </MapContainer>

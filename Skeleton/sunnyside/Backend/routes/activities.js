@@ -68,7 +68,7 @@ router.patch('/', async(req, res) => {
             return res.status(404).json({message: 'Activity not found'});
         }
 
-        // if the request body contains a rating, update the activities rating to be a average
+        // if the request body contains a rating, update the activities rating to be an average
         if(req.body.rating){
             activity.rating = req.body.rating;
         }
