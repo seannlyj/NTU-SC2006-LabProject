@@ -194,8 +194,19 @@ async function fetchDayTimeFromAPI() {
 
     return { dayTime: `${day}, ${time}` };
   } catch (error) {
-    console.error("Error fetching daytime:", error);
-    return { dayTime: "Error fetching time" };
+    console.error("Error fetching daytime from API. Falling back to local time:", error);
+
+    // Fallback to local time if the API fetch fails
+    const localDateTime = new Date();
+    const localDay = localDateTime
+      .toLocaleDateString("en-GB", { weekday: "long" })
+      .toUpperCase();
+    const localTime = localDateTime.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    return { dayTime: `${localDay}, ${localTime}` };
   }
 }
 
