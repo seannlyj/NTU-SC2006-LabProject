@@ -145,3 +145,10 @@
   border: none; /* No border */
   cursor: pointer; /* Change cursor to pointer on hover */
 }
+
+
+.error {
+  color: red; /* Set the text color to red for error messages */
+  margin: 10px 0; /* Add some margin for spacing */
+  font-size: 14px; /* Optional: Set font size for error messages */
+}
