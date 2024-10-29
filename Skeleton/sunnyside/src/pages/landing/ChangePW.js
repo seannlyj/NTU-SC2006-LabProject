@@ -41,7 +41,8 @@ function ChangePW({ isOpen, onClose, userEmail}) {
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
     const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    return hasUpperCase && hasLowerCase && hasSymbol;
+    const isLongEnough = password.length >= 8;
+    return hasUpperCase && hasLowerCase && hasSymbol && isLongEnough; //added
   };
 
   const handleSubmit = async (e) => {
@@ -126,7 +127,7 @@ function ChangePW({ isOpen, onClose, userEmail}) {
 
         {passwordError && (//NEW - Formatting for password validation
               <div className="mismatchError">
-                <p className="mismatchMessage">Password must contain at least one uppercase letter, one lowercase letter, and one symbol.</p>
+                <p className="mismatchMessage">Password must contain at least one uppercase letter, one lowercase letter, and one symbol AND must be 8 characters long.</p>
               </div>
             )}
 

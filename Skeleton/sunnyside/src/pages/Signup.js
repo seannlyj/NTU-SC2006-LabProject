@@ -40,7 +40,8 @@ const SignUp = () => {
     const hasUpperCase = /[A-Z]/.test(password); // Check for uppercase letter //added
     const hasLowerCase = /[a-z]/.test(password); // Check for lowercase letter //added
     const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password); // Check for symbol //added
-    return hasUpperCase && hasLowerCase && hasSymbol; //added
+    const isLongEnough = password.length >= 8;
+    return hasUpperCase && hasLowerCase && hasSymbol && isLongEnough; //added
   };
 
   const handlePasswordChange = (e) => {//NEW!!!
@@ -50,7 +51,7 @@ const SignUp = () => {
     // Check password validity as user types
     if (!validatePassword(newPassword)) {
       setPasswordError(
-        "Your password must contain at least one uppercase letter, one lowercase letter, and one symbol."
+        "Your password must contain at least one uppercase letter, one lowercase letter, and one symbol      AND must be 8 characters long."
       ); //new
     } else {
       setPasswordError(""); // Clear error message if valid //new
@@ -73,7 +74,7 @@ const SignUp = () => {
     }
     // Check if the password meets the requirements //added - NEW
     if (!validatePassword(password)) {
-      setErrorMessage("Password must contain at least one uppercase letter, one lowercase letter, and one symbol."); //added
+      setErrorMessage("Password must contain at least one uppercase letter, one lowercase letter, and one symbol one symbol AND must be 8 characters long."); //added
       return; //added
     }
     try {
