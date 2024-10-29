@@ -70,6 +70,8 @@ function TemperatureDisplayPanel({
       setCurrentWeather(weather);
       setTemperature(temperature);
     }
+
+
   };
 
   const weatherIcon = getWeatherIcon(currentWeather);
@@ -100,37 +102,6 @@ function TemperatureDisplayPanel({
             <label className="ActivityDistance">{activity.distance}</label>
           </div>
         ))}
-      </div>
-
-      <h3>For Demo Purpose</h3>
-      <div className="WeatherUpdate">
-        <label>
-          <input
-            type="checkbox"
-            checked={isDemoMode}
-            onChange={(e) => setIsDemoMode(e.target.checked)}
-          />
-          Demo Mode
-        </label>
-        <select
-          value={inputWeather}
-          onChange={(e) => setInputWeather(e.target.value)}
-          className="WeatherDropdown"
-          disabled={!isDemoMode}
-        >
-          <option value="Cloudy">Cloudy</option>
-          <option value="Partly Cloudy(Day)">Partly Cloudy (Day)</option>
-          <option value="Partly Cloudy(Night)">Partly Cloudy (Night)</option>
-          <option value="Fair(Day)">Fair (Day)</option>
-          <option value="Fair(Night)">Fair (Night)</option>
-          <option value="Fog">Fog</option>
-          <option value="Showers">Showers</option>
-          <option value="Thundery Showers">Thundery Showers</option>
-          <option value="Windy">Windy</option>
-        </select>
-        <button onClick={handleWeatherUpdate} className="WeatherUpdateButton">
-          Update Weather
-        </button>
       </div>
 
       <CustomModal
