@@ -49,7 +49,9 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
   ];
 
   const [markers, setMarkers] = useState(markerData || defaultMarkers);
-  const [newRating, setNewRating] = useState("");
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [isInteractingWithMarker, setIsInteractingWithMarker] = useState(false);
+  const [newRating, setNewRating] = useState(null);
   const [lat, setLat] = useState("");
   const [long, setLong] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,6 +63,14 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
       setMarkers(markerData);
     }
   }, [markerData]);
+
+  useEffect(() => {
+    if (selectedMarker) {
+      setLat(selectedMarker.geocode[0].toString());
+      setLong(selectedMarker.geocode[1].toString());
+      setNewRating(selectedMarker.rating);
+    }
+  }, [selectedMarker]);
 
   const iconWidth = 100;
   const iconHeight = 100;
@@ -324,6 +334,7 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
     try {
 
       const response = await axios.patch('/api/activities/', data);
+      setNewRating(null); // reset rating value
 
     } catch (error) {
       const message = error.response?.data?.message || 'Error. Please try again';
@@ -365,6 +376,13 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
             key={marker.popUp} // Unique key for each marker
             position={marker.geocode}
             icon={getActivityIcon(marker.activity, marker.indoorOutdoor)}
+
+            eventHandlers={{
+              click: () => {
+                setSelectedMarker(marker);
+                setIsInteractingWithMarker(true); // Set this to true when a marker is clicked
+              }
+            }}
           >
             <Popup>
               <div className="popup-content">
@@ -397,15 +415,17 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
                       defaultValue={marker.rating}
                       onChange={(e) => {
                         console.log(`New rating for ${marker.popUp}: ${e.target.value}`)
-                        setLat(marker.geocode[0].toString());
-                        setLong(marker.geocode[1].toString());
                         setNewRating(e.target.value);
                         setMarkers((prevMarkers) =>
                           prevMarkers.map((m) =>
                             m.popUp === marker.popUp ? { ...m, rating: e.target.value } : m
-                          ));
+                          )); 
                         }
                       }
+                      
+                        onMouseEnter={() => setSelectedMarker(marker)} // Set selected marker when hovering
+                        onMouseLeave={() => setSelectedMarker(null)} // Reset when not hovering
+
                     />
                     <div className="rating-labels">
                       <span>1</span>
@@ -417,7 +437,14 @@ const MapComponent = ({ selectedActivity, markerData , email, latitude, longitud
                   </div>
                   <button
                     className="rating-button"
-                    onClick={() => handleRating()}
+                    onClick={() => {
+                      setLat(marker.geocode[0].toString());
+                      setLong(marker.geocode[1].toString());
+                      setNewRating(newRating || marker.rating);
+
+                      handleRating()
+                      setIsInteractingWithMarker(false); // Reset this after rating is submitted
+                    }}
                   >
                     Rate Activity
                   </button>
