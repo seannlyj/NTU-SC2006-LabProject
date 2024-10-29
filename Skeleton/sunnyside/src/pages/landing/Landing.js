@@ -67,6 +67,67 @@ const Landing = () => {
   // Loading screen variables
   const [isLoading, setIsLoading] = useState(true);
 
+  // Demo mode variables
+  const [demoMode, setDemoMode] = useState(false); // To toggle demo mode
+  const [weatherIndex, setWeatherIndex] = useState(0); // To track demo scenario
+
+  const demoWeatherScenarios = [
+    { weather: "Thundery Showers", temperature: 22, cutoffTime: "15:00 - 17:00", location: "PASIR RIS" },
+    { weather: "Fair (Day)", temperature: 30, cutoffTime: "11:00 - 13:00", location: "ANG MO KIO" },
+    { weather: "Cloudy", temperature: 25, cutoffTime: "09:00 - 11:00", location: "SENG KANG" },
+  ];
+
+  // UseEffect to fetch data or apply demo weather
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true); // Start loading
+      if (demoMode) {
+        applyDemoWeather(weatherIndex);
+      } else {
+        await fetchWeatherData(latitude, longitude);
+        await fetchLocationData(latitude, longitude);
+        await fetchNearbyActivities(latitude, longitude);
+      }
+      setIsLoading(false); // End loading
+    };
+
+    if (latitude !== null && longitude !== null) {
+      fetchData();
+    }
+  }, [latitude, longitude, demoMode, weatherIndex]);
+
+  // Function to cycle through demo weather scenarios
+  const handleDemoToggle = () => {
+    if (demoMode) {
+      // If currently in demo mode, cycle to the next scenario
+      const nextIndex = weatherIndex + 1;
+      if (nextIndex < demoWeatherScenarios.length) {
+        setWeatherIndex(nextIndex);
+      } else {
+        // End demo mode when all scenarios have been cycled through
+        setDemoMode(false);
+        setWeatherIndex(0); // Reset the index for the next time demo is started
+      }
+    } else {
+      // If not in demo mode, start it and apply the first scenario
+      setDemoMode(true);
+      setWeatherIndex(0);
+      applyDemoWeather(0);
+    }
+  };
+
+  const applyDemoWeather = (index) => {
+    const scenario = demoWeatherScenarios[index];
+    console.log("Applying demo weather scenario:", scenario);
+    setWeather(scenario.weather);
+    setTemperature(scenario.temperature);
+    setWeatherCutoffTime(scenario.cutoffTime);
+    setLocation(scenario.location);
+
+    const recommended = getRecommendedActivities(markers, preferences, scenario.weather);
+    setRecommendedActivities(recommended);
+  };
+
   // useEffect to get user's geolocation
   useEffect(() => {
     if (navigator.geolocation) {
@@ -220,6 +281,12 @@ const Landing = () => {
         <ProfileButton toggleSettingsPanel={toggleSettingsPanel} />
         <HintPanel weather={weather} />
       </div>
+      <button
+        className="toggle-demo-button"
+        onClick={handleDemoToggle}
+      >
+        {demoMode ? "Next Scenario" : "Start Demo Mode"}
+      </button>
       <div className="content-container">
         <div className="map-wrapper">
           <MapComponent

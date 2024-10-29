@@ -86,3 +86,28 @@ body {
     transform: translateY(0);
   }
 }
+
+.toggle-demo-button {
+  position: fixed;
+  right: 40px;
+  top: 10%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
+  background-color: rgba(0, 123, 255, 0.7); /* Blue with 70% opacity */
+  border-radius: 50%;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  z-index: 1000; /* Ensures it stays on top of other elements */
+  transition: background-color 0.3s;
+}
+
+.toggle-demo-button:hover {
+  background-color: rgba(0, 123, 255, 1); /* Full opacity on hover */
+}
