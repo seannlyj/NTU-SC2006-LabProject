@@ -79,6 +79,7 @@ function SettingsPanel({
   };
 
   const handleLogout = () => {
+    new Audio("/sounds/notification-beep-229154.mp3").play();
     setIsModalOpen(true); // Open the modal
   };
 
@@ -148,7 +149,7 @@ function SettingsPanel({
             </thead>
             <tbody>
               {activities
-              .slice(-5) // display latest 5 activity
+              .slice(-3) // display latest 5 activity
               .reverse() // display latest loggedactivity at the top
               .map((activity, index) => (
                 <tr key={index}>

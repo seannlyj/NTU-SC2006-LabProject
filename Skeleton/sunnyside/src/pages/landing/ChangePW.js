@@ -3,6 +3,7 @@ import "../../styling/ChangePW.css";
 import errorLogo from '../../art/ChangePW-icons/errorCross.png';
 import successfulLogo from '../../art/ChangePW-icons/successfulTick.png';
 import axios from "axios";
+const playChime = () => new Audio("/sounds/pllogout-169389.mp3").play();
 
 function ChangePW({ isOpen, onClose, userEmail}) {
   const [newPassword, setNewPassword] = useState("");
@@ -73,6 +74,7 @@ function ChangePW({ isOpen, onClose, userEmail}) {
       });
 
       if (response.status === 200) {
+        playChime(); // Play the chime on success
         setPwChangeSuccessful(true); // Set success state <-- Modified: Set pwChangeSuccessful to true
         console.log("Password changed successfully!");
       }

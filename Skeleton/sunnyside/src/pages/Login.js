@@ -5,6 +5,7 @@ import logo from "../art/sunnysidelogo.PNG";
 import "../styling/Login.css";
 const bcrpyt = require('bcryptjs');
 
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,6 +50,8 @@ function Login() {
 
       console.log(`Checking password`);
       if (passwordMatch) {
+        const audio = new Audio("/sounds/level-up-191997.mp3");
+        audio.play();  // Play the chime sound on successful login
         navigate("/landing", { state: { email: email } });
         //setFadeOut(true);
         //setTimeout(() => navigate("/landing"), 1000); // Wait for the animation to complete
