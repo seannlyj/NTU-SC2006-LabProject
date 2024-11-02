@@ -47,7 +47,7 @@ function SettingsPanel({
       console.error("Error fetching user details:", error);
     }
   };
-/*
+  /*
   // Function to fetch activities from the database
   const fetchActivities = () => {
     // You can also fetch activities here if needed
@@ -63,8 +63,6 @@ function SettingsPanel({
     }
   }, [isOpen]); // Refetch data when the panel opens
 
-  
-
   // Modified function to open EditProfilePanel and close SettingsPanel
   const handleEditProfile = () => {
     toggleEditProfilePanel(); // Open EditProfilePanel
@@ -79,7 +77,7 @@ function SettingsPanel({
   };
 
   const handleLogout = () => {
-    new Audio("/sounds/notification-beep-229154.mp3").play();
+    //new Audio("/sounds/notification-beep-229154.mp3").play();
     setIsModalOpen(true); // Open the modal
   };
 
@@ -130,7 +128,7 @@ function SettingsPanel({
                 onClick={() => handlePreferenceClick(preference)} // Clickable preference
               >
                 {/* Display "+" if preference is 'None' */}
-                {preference === 'None' ? '+' : preference} 
+                {preference === "None" ? "+" : preference}
               </div>
             ))}
           </div>
@@ -149,15 +147,15 @@ function SettingsPanel({
             </thead>
             <tbody>
               {activities
-              .slice(-3) // display latest 5 activity
-              .reverse() // display latest loggedactivity at the top
-              .map((activity, index) => (
-                <tr key={index}>
-                  <td>{activity.activityName}</td>
-                  <td>{activity.date}</td>
-                  <td>{activity.time}</td>
-                </tr>
-              ))}
+                .slice(-3) // display latest 5 activity
+                .reverse() // display latest loggedactivity at the top
+                .map((activity, index) => (
+                  <tr key={index}>
+                    <td>{activity.activityName}</td>
+                    <td>{activity.date}</td>
+                    <td>{activity.time}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
 

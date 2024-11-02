@@ -41,11 +41,7 @@ const Landing = () => {
   };
 
   //User related variables
-  const [preferences, setPreferences] = useState([
-    "Martial Arts",
-    "Yoga",
-    "Swimming",
-  ]);
+  const [preferences, setPreferences] = useState([]);
 
   //Weather related variables
   const [weather, setWeather] = useState("Fair(Day)"); // Set variable for weather icon and set it's default to cloud
@@ -72,9 +68,24 @@ const Landing = () => {
   const [weatherIndex, setWeatherIndex] = useState(0); // To track demo scenario
 
   const demoWeatherScenarios = [
-    { weather: "Thundery Showers", temperature: 22, cutoffTime: "15:00 - 17:00", location: "PASIR RIS" },
-    { weather: "Fair (Day)", temperature: 30, cutoffTime: "11:00 - 13:00", location: "ANG MO KIO" },
-    { weather: "Cloudy", temperature: 25, cutoffTime: "09:00 - 11:00", location: "SENG KANG" },
+    {
+      weather: "Thundery Showers",
+      temperature: 22,
+      cutoffTime: "15:00 - 17:00",
+      location: "PASIR RIS",
+    },
+    {
+      weather: "Fair (Day)",
+      temperature: 30,
+      cutoffTime: "11:00 - 13:00",
+      location: "ANG MO KIO",
+    },
+    {
+      weather: "Cloudy",
+      temperature: 25,
+      cutoffTime: "09:00 - 11:00",
+      location: "SENG KANG",
+    },
   ];
 
   // UseEffect to fetch data or apply demo weather
@@ -124,7 +135,11 @@ const Landing = () => {
     setWeatherCutoffTime(scenario.cutoffTime);
     setLocation(scenario.location);
 
-    const recommended = getRecommendedActivities(markers, preferences, scenario.weather);
+    const recommended = getRecommendedActivities(
+      markers,
+      preferences,
+      scenario.weather
+    );
     setRecommendedActivities(recommended);
   };
 
@@ -275,60 +290,64 @@ const Landing = () => {
 
   return (
     <div className="Landing">
-      {isLoading ? ( <LoadingScreen /> ) : (
+      {isLoading ? (
+        <LoadingScreen />
+      ) : (
         <>
-      <div className="header">
-        <ProfileButton toggleSettingsPanel={toggleSettingsPanel} />
-        <HintPanel weather={weather} />
-      </div>
-      <button
-        className="toggle-demo-button"
-        onClick={handleDemoToggle}
-      >
-        {demoMode ? "Next Scenario" : "Start Demo Mode"}
-      </button>
-      <div className="content-container">
-        <div className="map-wrapper">
-          <MapComponent
-            selectedActivity={selectedActivity}
-            markerData={recommendedActivities} // Pass recommended activities as markerData
-            email={email}
-            latitude={latitude}
-            longitude={longitude}
-          />
-        </div>
-        <TemperatureDisplayPanel
-          weather={weather}
-          weatherName={weatherName}
-          weatherCutoffTime={weatherCutoffTime}
-          temperature={temperature}
-          location={location}
-          activities={recommendedActivities.map(activity => ({
-            ...activity,
-            distance: `${calculateDistance(latitude, longitude, activity.geocode[0], activity.geocode[1]).toFixed(2)} KM`, // Calculate and include distance
-          }))}
-          onActivityClick={handleActivityClick} // Pass the handler
-        />
-        {geoError && <p className="geo-error">{geoError}</p>}{" "}
-        {/* Display geolocation error */}
-        <SettingsPanel
-          isOpen={isSettingsOpen}
-          toggleSettingsPanel={toggleSettingsPanel}
-          toggleEditProfilePanel={toggleEditProfilePanel}
-          preferences={preferences}
-          email={email}
-        />
-        <EditProfilePanel
-          isOpen={isEditProfileOpen}
-          toggleEditProfilePanel={toggleEditProfilePanel}
-          preferences={preferences}
-          setPreferences={(newPreferences) => {
-            setPreferences(newPreferences);
-          }}
-          email={email}
-        />
-      </div>
-      </>
+          <div className="header">
+            <ProfileButton toggleSettingsPanel={toggleSettingsPanel} />
+            <HintPanel weather={weather} />
+          </div>
+          <button className="toggle-demo-button" onClick={handleDemoToggle}>
+            {demoMode ? "Next Scenario" : "Start Demo Mode"}
+          </button>
+          <div className="content-container">
+            <div className="map-wrapper">
+              <MapComponent
+                selectedActivity={selectedActivity}
+                markerData={recommendedActivities} // Pass recommended activities as markerData
+                email={email}
+                latitude={latitude}
+                longitude={longitude}
+              />
+            </div>
+            <TemperatureDisplayPanel
+              weather={weather}
+              weatherName={weatherName}
+              weatherCutoffTime={weatherCutoffTime}
+              temperature={temperature}
+              location={location}
+              activities={recommendedActivities.map((activity) => ({
+                ...activity,
+                distance: `${calculateDistance(
+                  latitude,
+                  longitude,
+                  activity.geocode[0],
+                  activity.geocode[1]
+                ).toFixed(2)} KM`, // Calculate and include distance
+              }))}
+              onActivityClick={handleActivityClick} // Pass the handler
+            />
+            {geoError && <p className="geo-error">{geoError}</p>}{" "}
+            {/* Display geolocation error */}
+            <SettingsPanel
+              isOpen={isSettingsOpen}
+              toggleSettingsPanel={toggleSettingsPanel}
+              toggleEditProfilePanel={toggleEditProfilePanel}
+              preferences={preferences}
+              email={email}
+            />
+            <EditProfilePanel
+              isOpen={isEditProfileOpen}
+              toggleEditProfilePanel={toggleEditProfilePanel}
+              preferences={preferences}
+              setPreferences={(newPreferences) => {
+                setPreferences(newPreferences);
+              }}
+              email={email}
+            />
+          </div>
+        </>
       )}
     </div>
   );
